@@ -8,12 +8,18 @@
     <div th:replace="fragments/head :: header"></div>
 
     <div class="layui-body" style="margin: 1%">
-        <form id="workStationSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+        <form id="procedureSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <div class="layui-form-item">
                 <label class="layui-form-label">工序号</label>
                 <div class="layui-input-inline">
-                    <input id="ufoctory" name="uprocedure" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="uprocedurecode" name="uprocedurecode" autocomplete="off" class="layui-input" type="text"/>
                 </div>
+                <label class="layui-form-label">工序名</label>
+                <div class="layui-input-inline">
+                    <input id="uprocedurename" name="uprocedurename" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button class="layui-btn"  lay-submit="" lay-filter="searchSubmit">提交</button>
             </div>
         </form>
 
@@ -36,9 +42,9 @@
         </script>
     </div>
 
-    <!--添加或编辑用户-->
+    <!--添加或编辑工序-->
     <div id="setProcedure" class="layer_self_wrap" style="width:500px;display:none;">
-        <form id="workStationForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+        <form id="procedureForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <input id="id" type="hidden" name="id"/>
             <div class="layui-form-item">
                 <label class="layui-form-label">工序号</label>
@@ -56,7 +62,7 @@
 
             <div class="layui-form-item">
                 <div class="layui-input-block" style="margin-left: 10px;">
-                    <button class="layui-btn"  lay-submit="" lay-filter="workStationSubmit">提交</button>
+                    <button class="layui-btn"  lay-submit="" lay-filter="procedureSubmit">提交</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>

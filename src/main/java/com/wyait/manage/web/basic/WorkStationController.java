@@ -107,7 +107,7 @@ public class WorkStationController {
      */
     @RequestMapping(value = "/revoverWorkStation", method = RequestMethod.POST)
     @ResponseBody
-    public String recoverUser(@RequestParam("id") Integer id) {
+    public String recoverWorkStation(@RequestParam("id") Integer id) {
         logger.debug("恢复工位！id:" + id );
         String msg = "";
         try {
@@ -138,31 +138,31 @@ public class WorkStationController {
      */
     @RequestMapping(value = "/getWorkStation", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> getUserAndRoles(@RequestParam("id") Integer id) {
+    public Map<String, Object> getWorkStation(@RequestParam("id") Integer id) {
         logger.debug("查询工位数据！id:" + id);
         Map<String, Object> map = new HashMap<>();
         try {
             if (null == id) {
-                logger.debug("查询用户数据==请求参数有误，请您稍后再试");
+                logger.debug("查询工位数据==请求参数有误，请您稍后再试");
                 map.put("msg", "请求参数有误，请您稍后再试");
                 return map;
             }
             // 查询工位
             WorkStationVO workStationVO = workStationService.getWorkStation(id);
-            logger.debug("查询用户数据！urvo=" + workStationVO);
+            logger.debug("查询工位数据！wsvo=" + workStationVO);
             if (null != workStationVO) {
                 map.put("workStation", workStationVO);
                 // 获取全部角色数据
                 map.put("msg", "ok");
             } else {
-                map.put("msg", "查询用户信息有误，请您稍后再试");
+                map.put("msg", "查询工位信息有误，请您稍后再试");
             }
-            logger.debug("查询用户数据成功！map=" + map);
+            logger.debug("查询工位数据成功！map=" + map);
             return map;
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("msg", "查询用户错误，请您稍后再试");
-            logger.error("查询用户数据异常！", e);
+            map.put("msg", "查询工位错误，请您稍后再试");
+            logger.error("查询工位数据异常！", e);
         }
         return map;
     }
@@ -185,7 +185,7 @@ public class WorkStationController {
                 logger.debug("设置工位[新增或更新]，结果=您未登录或登录超时，请您登录后再试");
                 return "您未登录或登录超时，请您登录后再试";
             }
-            // 设置用户[新增或更新]
+            // 设置工位[新增或更新]
             logger.info("设置工位[新增或更新]成功！workStation=" + workStation
                     + "，操作的用户ID=" + existUser.getId());
             return workStationService.setWorkStation(workStation);

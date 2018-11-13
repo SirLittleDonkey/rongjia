@@ -54,7 +54,7 @@ $(function(){
             }
         })
         //监听提交
-        form.on('submit(workStationSubmit)', function(data){
+        form.on('submit(procedureSubmit)', function(data){
             // TODO 校验
             formSubmit(data);
             return false;
@@ -87,16 +87,16 @@ function load(obj){
 }
 
 //添加工位
-function addWorkStation(){
-    openWorkStation(null,"开通用户");
+function addProcedure(){
+    openProcedure(null,"开通用户");
 }
 
-function delWorkStation(obj, id, workStationCode){
+function delProcedure(obj, id, procedureCode){
     if(null != id){
-        layer.confirm('您确定要删除' + workStationCode + '工位吗？',{
+        layer.confirm('您确定要删除' + procedureCode + '工位吗？',{
             btn: ['确认', '返回']   //按钮
         },function(){
-            $.post('/basic/delWorkStation',{"id": id}, function(data){
+            $.post('/basic/delProcedure',{"id": id}, function(data){
                 if(isLogin(data)){
                     if(data == "ok"){
                         //回调弹框
@@ -120,12 +120,12 @@ function delWorkStation(obj, id, workStationCode){
     }
 }
 
-function recoverWorkStation(obj, id ,workStationCode){
+function recoverProcedure(obj, id ,procedureCode){
     if(null != id){
-        layer.confirm('您确定要恢复' + workStationCode + '工位吗？',{
+        layer.confirm('您确定要恢复' + procedureCode + '工序吗？',{
             btn: ['确认', '返回']   //按钮
         },function(){
-            $.post('/basic/revoverWorkStation',{"id": id}, function(data){
+            $.post('/basic/revoverProcedure',{"id": id}, function(data){
                 if(isLogin(data)){
                     if(data == "ok"){
                         //回调弹框
@@ -149,22 +149,18 @@ function recoverWorkStation(obj, id ,workStationCode){
     }
 }
 
-function getWorkStation(obj, id){
+function getProcedure(obj, id){
     if(obj.del){
         layer.alert("该工位已经删除，不可进行编辑；</br>  如需编辑，请先<font style='font-weight:bold;' color='blue'>恢复</font>工位状态。");
     }else{
         //回显数据
-        $.get("/basic/getWorkStation", {"id": id}, function(data){
+        $.get("/basic/getProcedure", {"id": id}, function(data){
             if(isLogin(data)){
-                if(data.msg == "ok" && data.workStation != null){
-                    $('#id').val(data.workStation.id == null ? '': data.workStation.id)
-                    $('#factoryCode').val(data.workStation.factoryCode == null ? '': data.workStation.factoryCode)
-                    $('#factoryName').val(data.workStation.factoryName == null ? '': data.workStation.factoryName)
-                    $('#workShopCode').val(data.workStation.workShopCode == null ? '': data.workStation.workShopCode)
-                    $('#workShopName').val(data.workStation.workShopName == null ? '': data.workStation.workShopName)
-                    $('#workStationCode').val(data.workStation.workStationCode == null ? '': data.workStation.workStationCode)
-                    $('#ipAddress').val(data.workStation.ipAddress == null ? '': data.workStation.ipAddress)
-                    openWorkStation(id, "设置工位")
+                if(data.msg == "ok" && data.procedure != null){
+                    $('#id').val(data.procedure.id == null ? '': data.procedure.id)
+                    $('#procedureCode').val(data.procedure.procedureCode == null ? '': data.procedure.procedureCode)
+                    $('#procedureName').val(data.procedure.procedureName == null ? '': data.procedure.procedureName)
+                    openProcedure(id, "设置工位")
                 }else{
                     //弹出错误提示
                     layer.alert(data.msg,function () {
@@ -176,7 +172,7 @@ function getWorkStation(obj, id){
     }
 }
 
-function openWorkStation(id, title){
+function openProcedure(id, title){
     if(id == null || id == ""){
         $("#id").val("");
     }
@@ -187,33 +183,29 @@ function openWorkStation(id, title){
         resize :false,
         shadeClose: true,
         area: ['550px'],
-        content:$('#setWorkStation'),
+        content:$('#setProcedure'),
         end:function(){
-            cleanWorkStation();
+            cleanProcedure();
         }
     });
 }
 
-function cleanWorkStation(){
-    $('#factoryCode').val('')
-    $('#factoryName').val('')
-    $('#workShopCode').val('')
-    $('#workShopName').val('')
-    $('#workStationCode').val('')
-    $('#ipAddress').val('')
+function cleanProcedure(){
+    $('#procedureCode').val('')
+    $('#procedureName').val('')
 }
 
 function formSubmit(obj){
     $.ajax({
         type: "POST",
-        data: $("#workStationForm").serialize(),
-        url: "/basic/setWorkStation",
+        data: $("#procedureForm").serialize(),
+        url: "/basic/setProcedure",
         success: function (data) {
             if(isLogin(data)){
                 if (data == "ok") {
                     layer.alert("操作成功",function(){
                         layer.closeAll();
-                        cleanWorkStation();
+                        cleanProcedure();
                         //$("#id").val("");
                         //加载页面
                         load(obj);
