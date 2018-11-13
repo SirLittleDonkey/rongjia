@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.basic.ProcedureMapper">
+    <resultMap id="BaseResultMap" type="com.wyait.manage.pojo.basic.Procedure">
+        <id column="id" jdbcType="INTEGER" property="id"   />
+        <result column="procedureCode" jdbcType="VARCHAR" property="procedureCode"></result>
+        <result column="procedureName" jdbcType="VARCHAR" property="procedureCode"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+
+    <!--=Start getUsers 分页查询工位列表userSearch -->
+    <select id="getProcedures" resultType="com.wyait.manage.entity.basic.ProcedureDTO">
+        SELECT id, procedureCode, procedureName, is_del
+        FROM proced
+        <where>
+            <if test="procedureSearchDTO.uprocedurecode != null and procedureSearchDTO.uprocedurecode != ''">
+                AND procedureCode = #{procedureSearchDTO.uprocedurecode}
+            </if>
+            <if test="procedureSearchDTO.uprocedurename != null and procedureSearchDTO.uprocedurename != ''">
+                AND procedureName = #{procedureSearchDTO.uprocedurename}
+            </if>
+        </where>
+    </select>
+
+    <!--=Start findWorkStationByWorkStationCode 根据工位号获取工位数据 -->
+    <select id="findProcedureByProcedureCode" resultType="com.wyait.manage.pojo.basic.Procedure">
+		select
+		id, procedureCode,
+		procedureName, is_del
+		from proced
+		WHERE
+		procedureCode=#{procedureCode} and is_del=0
+	</select>
+    <!--=End findUserByMobile 根据手机号查找用户 -->
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.wyait.manage.pojo.basic.Procedure">
+        update proced
+        <set>
+            <if test="procedureCode != null">
+                procedureCode = #{procedureCode,jdbcType=VARCHAR},
+            </if>
+            <if test="procedureName != null">
+                procedureName = #{procedureName,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.pojo.basic.Procedure">
+		insert into proced (id, procedureCode, procedureName, is_del
+		)
+		values (#{id,jdbcType=INTEGER}, #{procedureCode,jdbcType=VARCHAR},
+		#{procedureName,jdbcType=VARCHAR}, #{isDel,jdbcType=BIT}
+		)
+	</insert>
+
+    <!--=Start getUserAndRoles 查询用户及他对应的角色ids -->
+    <resultMap id="getProcedure" type="com.wyait.manage.entity.basic.ProcedureVO">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="procedureCode" jdbcType="VARCHAR" property="procedureCode"></result>
+        <result column="procedureName" jdbcType="VARCHAR" property="procedureName"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+    <select id="getProcedure" resultMap="getProcedure">
+		SELECT id, procedureCode, procedureName, is_del
+        FROM proced
+        WHERE id = #{id} AND is_del = 0
+	</select>
+    <!--=End getUserAndRoles 查询用户及他对应的角色ids -->
+
+    <!--=Start setDelUser 删除工位 -->
+    <update id="setDelProcedure">
+		update proced
+		set
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+    <!--=End setDelUser 删除工位 -->
+</mapper>
