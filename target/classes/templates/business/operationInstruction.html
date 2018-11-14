@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html  xmlns:th="http://www.thymeleaf.org"
        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head th:include="layout :: htmlhead" th:with="title='工位管理'"></head>
+<head th:include="layout :: htmlhead" th:with="title='作业指导书管理'"></head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <!--头-->
     <div th:replace="fragments/head :: header"></div>
 
     <div class="layui-body" style="margin: 1%">
-        <form id="workStationSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+        <form id="operationInstructionSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <div class="layui-form-item">
-                <label class="layui-form-label">厂区号</label>
+                <label class="layui-form-label">产品编号</label>
                 <div class="layui-input-inline">
-                    <input id="ufoctory" name="ufoctory" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="uinvcode" name="uinvcode" autocomplete="off" class="layui-input" type="text"/>
                 </div>
-                <label class="layui-form-label">车间号</label>
+                <label class="layui-form-label">工序号</label>
                 <div class="layui-input-inline">
-                    <input id="uworkshop" name="uworkshop" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
-                           onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
-                </div>
-                <label class="layui-form-label">工位号</label>
-                <div class="layui-input-inline">
-                    <input id="uworkstation" name="uworkstation" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                    <input id="uprocedurecode" name="uprocedurecode" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
                            onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                 </div>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -32,11 +27,11 @@
         <!--<hr class="layui-bg-blue"/>-->
         <hr class="layui-bg-black"/>
 
-        <button class="layui-btn layui-btn-normal" onclick="addWorkStation()">添加工位</button>
+        <button class="layui-btn layui-btn-normal" onclick="addOperationInstruction()">添加作业指导书</button>
 
         <div style="display:none;" id="currentUser"><shiro:principal property="id"></shiro:principal></div>
 
-        <table id="workStationList" lay-filter="workStationTable"></table>
+        <table id="operationInstructionList" lay-filter="operationInstructionTable"></table>
 
         <script type="text/html" id="optBar">
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -46,56 +41,63 @@
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
             {{#  } }}
         </script>
+        <script type="text/html" id="uploadcheck">
+            {{#  if(d.hasUpload){ }}
+            <span >否</span>
+            {{#  } else { }}
+            <span >是</span>
+            {{#  } }}
+        </script>
     </div>
 
     <!--添加或编辑用户-->
-    <div id="setWorkStation" class="layer_self_wrap" style="width:500px;display:none;">
-        <form id="workStationForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+    <div id="setOperationInstruction" class="layer_self_wrap" style="width:500px;display:none;">
+        <form id="operationInstructionForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <input id="id" type="hidden" name="id"/>
             <div class="layui-form-item">
-                <label class="layui-form-label">工厂Code</label>
+                <label class="layui-form-label">产品编号</label>
                 <div class="layui-input-inline">
-                    <input id="factoryCode" name="factoryCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="invCode" name="invCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">工厂名</label>
+                <label class="layui-form-label">产品名称</label>
                 <div class="layui-input-inline">
-                    <input id="factoryName" name="factoryName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="invName" name="invName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">车间号</label>
+                <label class="layui-form-label">规格型号</label>
                 <div class="layui-input-inline">
-                    <input id="workShopCode" name="workShopCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="invStd" name="invStd" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">车间名</label>
+                <label class="layui-form-label">工序号</label>
                 <div class="layui-input-inline">
-                    <input id="workShopName" name="workShopName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="procedureCode" name="procedureCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">工位号</label>
+                <label class="layui-form-label">工序名</label>
                 <div class="layui-input-inline">
-                    <input id="workStationCode" name="workStationCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="procedureName" name="procedureName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">IP地址</label>
+                <label class="layui-form-label">上传文件</label>
                 <div class="layui-input-inline">
-                    <input id="ipAddress" name="ipAddress" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="file" name="file" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block" style="margin-left: 10px;">
-                    <button class="layui-btn"  lay-submit="" lay-filter="workStationSubmit">提交</button>
+                    <button class="layui-btn"  lay-submit="" lay-filter="operationInstructionSubmit">提交</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
@@ -106,7 +108,7 @@
     <!--底部-->
     <div th:replace="fragments/footer :: footer"></div>
     <script src="/js/dateUtils.js"></script>
-    <script src="/js/basic/workstation.js"></script>
+    <script src="/js/business/operationinstruction.js"></script>
 
 </div>
 </body>
