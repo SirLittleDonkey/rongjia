@@ -81,12 +81,12 @@ function getParentArry(id, arry) {
 function updateUsePwd(){
     layer.open({
         type:1,
-        title: "修改密码",
+        title: "设置新密码",
         fixed:false,
         resize :false,
         shadeClose: true,
         area: ['450px'],
-        content:$('#useDetail')
+        content:$('#pwdDiv')
     });
 }
 

@@ -123,12 +123,6 @@ public class UserServiceImpl implements UserService {
 		int userId;
 		if (user.getId() != null) {
 			// 判断用户是否已经存在
-			User existUser = this.userMapper.findUserByMobile(user.getMobile());
-			if (null != existUser
-					&& !String.valueOf(existUser.getId()).equals(
-							String.valueOf(user.getId()))) {
-				return "该手机号已经存在";
-			}
 			User exist = this.userMapper.findUserByName(user.getUsername());
 			if (null != exist
 					&& !String.valueOf(exist.getId()).equals(
@@ -180,10 +174,6 @@ public class UserServiceImpl implements UserService {
 			logger.debug("清除所有用户权限缓存！！！");
 		} else {
 			// 判断用户是否已经存在
-			User existUser = this.userMapper.findUserByMobile(user.getMobile());
-			if (null != existUser) {
-				return "该手机号已经存在";
-			}
 			User exist = this.userMapper.findUserByName(user.getUsername());
 			if (null != exist) {
 				return "该用户名已经存在";
@@ -239,58 +229,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String sendMsg(UserDTO user) {
-		// 校验用户名和密码 是否正确
-		User existUser = this.userMapper.findUser(user.getUsername(),
-				DigestUtils.md5Hex(user.getPassword()));
-		if (null != existUser && existUser.getMobile().equals(user.getMobile())) {
-			String mobileCode = "";
-			if (existUser.getSendTime() != null) {
-				long beginTime = existUser.getSendTime().getTime();
-				long endTime = new Date().getTime();
-				// 1分钟内有效
-				if (((endTime - beginTime) < 60000)) {
-					logger.debug("发送短信验证码【wyait-manager-->UserServiceImpl.sendMsg】用户信息=existUser:"
-							+ existUser);
-					mobileCode = existUser.getMcode();
-				}
-			}
-			if (StringUtils.isBlank(mobileCode)) {
-				// 1分钟以内，有效
-				mobileCode = String
-						.valueOf((int) ((Math.random() * 9 + 1) * 100000));
-				// 保存短信
-				existUser.setMcode(mobileCode);
-			}
-			// 更新验证码时间，延长至当前时间
-			existUser.setSendTime(new Date());
-			this.userMapper.updateByPrimaryKeySelective(existUser);
-			// 发送短信验证码 ok、no
-			return SendMsgServer.SendMsg(mobileCode + "(验证码)，如不是本人操作，请忽略此消息。",
-					user.getMobile());
-		} else {
-			return "您输入的用户信息有误，请您重新输入";
-		}
+	public User findUserByName(String username) {
+		return this.userMapper.findUserByName(username);
 	}
 
-	@Override
-	public User findUserByMobile(String mobile) {
-		return this.userMapper.findUserByMobile(mobile);
-	}
-
-	@Override
-	public String sendMessage(int userId, String mobile) {
-		String mobile_code = String.valueOf((Math.random() * 9 + 1) * 100000);
-		// 保存短信
-		User user = new User();
-		user.setId(userId);
-		user.setMcode(mobile_code);
-		user.setSendTime(new Date());
-		this.userMapper.updateByPrimaryKeySelective(user);
-		// 发送短信验证码 ok、no
-		return SendMsgServer.SendMsg(mobile_code + "(验证码)，如不是本人操作，请忽略此消息。",
-				user.getMobile());
-	}
 
 	@Override
 	public int updatePwd(Integer id, String password) {

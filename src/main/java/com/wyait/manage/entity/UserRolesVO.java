@@ -9,10 +9,6 @@ public class UserRolesVO {
 
 	private String username;
 
-	private String mobile;
-
-	private String email;
-
 	private String password;
 
 	private Integer insertUid;
@@ -43,22 +39,6 @@ public class UserRolesVO {
 
 	public void setUsername(String username) {
 		this.username = username == null ? null : username.trim();
-	}
-
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile == null ? null : mobile.trim();
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email == null ? null : email.trim();
 	}
 
 	public String getPassword() {
@@ -125,14 +105,5 @@ public class UserRolesVO {
 		this.version = version;
 	}
 
-	@Override
-	public String toString() {
-		return "UserRolesVO [id=" + id + ", username=" + username + ", mobile="
-				+ mobile + ", email=" + email + ", password=" + password
-				+ ", insertUid=" + insertUid + ", insertTime=" + insertTime
-				+ ", updateTime=" + updateTime + ", isDel=" + isDel
-				+ ", isJob=" + isJob + ", userRoles=" + userRoles
-				+ ", version=" + version + "]";
-	}
 
 }

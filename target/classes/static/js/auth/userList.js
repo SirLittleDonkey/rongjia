@@ -26,8 +26,6 @@ $(function() {
                 {type:'numbers'}
                 ,{field:'id', title:'ID',width:80, unresize: true, sort: true}
                 ,{field:'username', title:'用户名'}
-                ,{field:'mobile', title:'手机号'}
-                ,{field:'email', title: '邮箱'}
                 ,{field:'roleNames', title: '角色名称', minWidth:80}
                 ,{field:'insertTime', title: '添加时间'}
                 ,{field:'isJob', title:'是否在职',width:95,align:'center',templet:'#jobTpl'}
@@ -269,8 +267,6 @@ function getUserAndRoles(obj,id) {
                     $("#id").val(data.user.id==null?'':data.user.id);
                     $("#version").val(data.user.version==null?'':data.user.version);
                     $("#username").val(data.user.username==null?'':data.user.username);
-                    $("#mobile").val(data.user.mobile==null?'':data.user.mobile);
-                    $("#email").val(data.user.email==null?'':data.user.email);
                     //显示角色数据
                     $("#roleDiv").empty();
                     $.each(data.roles, function (index, item) {
@@ -384,7 +380,5 @@ function load(obj){
 function cleanUser(){
     //$("#id").val("");
     $("#username").val("");
-    $("#mobile").val("");
-    $("#email").val("");
     $("#password").val("");
 }

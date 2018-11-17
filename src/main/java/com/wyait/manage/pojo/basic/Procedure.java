@@ -1,18 +1,10 @@
 package com.wyait.manage.pojo.basic;
 
-public class Procedure {
-    private Integer id;
+import com.wyait.manage.pojo.BasePojo;
+
+public class Procedure extends BasePojo {
     private String procedureCode;
     private String procedureName;
-    private Boolean isDel;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getProcedureCode() {
         return procedureCode;
@@ -28,13 +20,5 @@ public class Procedure {
 
     public void setProcedureName(String procedureName) {
         this.procedureName = procedureName;
-    }
-
-    public Boolean getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Boolean del) {
-        isDel = del;
     }
 }

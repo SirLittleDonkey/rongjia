@@ -155,7 +155,7 @@ public class ProcedureController {
     }
 
     /**
-     * 删除工位
+     * 恢复工序
      * @return ok/fail
      */
     @RequestMapping(value = "/revoverProcedure", method = RequestMethod.POST)

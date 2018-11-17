@@ -64,13 +64,6 @@ public interface UserMapper {
 			@Param("password") String password);
 
 	/**
-	 *	根据手机号获取用户数据
-	 * @param mobile
-	 * @return
-	 */
-	User findUserByMobile(String mobile);
-
-	/**
 	 * 根据用户名获取用户数据
 	 * @param username
 	 * @return

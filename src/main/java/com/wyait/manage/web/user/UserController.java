@@ -339,7 +339,7 @@ public class UserController {
 			return responseResult;
 		}
 		// 用户是否存在
-		User existUser = this.userService.findUserByMobile(user.getMobile());
+		User existUser = this.userService.findUserByName(user.getUsername());
 		if (existUser == null) {
 			responseResult.setMessage("该用户不存在，请您联系管理员");
 			logger.debug("用户登录，结果=responseResult:" + responseResult);
@@ -371,28 +371,28 @@ public class UserController {
 		try {
 			// 1、 封装用户名、密码、是否记住我到token令牌对象 [支持记住我]
 			AuthenticationToken token = new UsernamePasswordToken(
-					user.getMobile(), DigestUtils.md5Hex(user.getPassword()),
+					user.getUsername(), DigestUtils.md5Hex(user.getPassword()),
 					rememberMe);
 			// 2、 Subject调用login
 			Subject subject = SecurityUtils.getSubject();
 			// 在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查
 			// 每个Realm都能在必要时对提交的AuthenticationTokens作出反应
 			// 所以这一步在调用login(token)方法时,它会走到MyRealm.doGetAuthenticationInfo()方法中,具体验证方式详见此方法
-			logger.debug("用户登录，用户验证开始！user=" + user.getMobile());
+			logger.debug("用户登录，用户验证开始！user=" + user.getUsername());
 			subject.login(token);
 			responseResult.setCode(IStatusMessage.SystemStatus.SUCCESS
 					.getCode());
-			logger.info("用户登录，用户验证通过！user=" + user.getMobile());
+			logger.info("用户登录，用户验证通过！user=" + user.getUsername());
 		} catch (UnknownAccountException uae) {
-			logger.error("用户登录，用户验证未通过：未知用户！user=" + user.getMobile(), uae);
+			logger.error("用户登录，用户验证未通过：未知用户！user=" + user.getUsername(), uae);
 			responseResult.setMessage("该用户不存在，请您联系管理员");
 		} catch (IncorrectCredentialsException ice) {
 			// 获取输错次数
-			logger.error("用户登录，用户验证未通过：错误的凭证，密码输入错误！user=" + user.getMobile(),
+			logger.error("用户登录，用户验证未通过：错误的凭证，密码输入错误！user=" + user.getUsername(),
 					ice);
 			responseResult.setMessage("用户名或密码不正确");
 		} catch (LockedAccountException lae) {
-			logger.error("用户登录，用户验证未通过：账户已锁定！user=" + user.getMobile(), lae);
+			logger.error("用户登录，用户验证未通过：账户已锁定！user=" + user.getUsername(), lae);
 			responseResult.setMessage("账户已锁定");
 		} catch (ExcessiveAttemptsException eae) {
 			logger.error(
@@ -407,25 +407,25 @@ public class UserController {
 		 responseResult.setMessage("帐号已经禁止登录");
 		}*/catch (AuthenticationException ae) {
 			// 通过处理Shiro的运行时AuthenticationException就可以控制用户登录失败或密码错误时的情景
-			logger.error("用户登录，用户验证未通过：认证异常，异常信息如下！user=" + user.getMobile(),
+			logger.error("用户登录，用户验证未通过：认证异常，异常信息如下！user=" + user.getUsername(),
 					ae);
 			responseResult.setMessage("用户名或密码不正确");
 		} catch (Exception e) {
-			logger.error("用户登录，用户验证未通过：操作异常，异常信息如下！user=" + user.getMobile(), e);
+			logger.error("用户登录，用户验证未通过：操作异常，异常信息如下！user=" + user.getUsername(), e);
 			responseResult.setMessage("用户登录失败，请您稍后再试");
 		}
 		Cache<String, AtomicInteger> passwordRetryCache = ecm
 				.getCache("passwordRetryCache");
 		if (null != passwordRetryCache) {
-			int retryNum = (passwordRetryCache.get(existUser.getMobile()) == null ? 0
-					: passwordRetryCache.get(existUser.getMobile())).intValue();
+			int retryNum = (passwordRetryCache.get(existUser.getUsername()) == null ? 0
+					: passwordRetryCache.get(existUser.getUsername())).intValue();
 			logger.debug("输错次数：" + retryNum);
 			if (retryNum > 0 && retryNum < 6) {
 				responseResult.setMessage("用户名或密码错误" + retryNum + "次,再输错"
 						+ (6 - retryNum) + "次账号将锁定");
 			}
 		}
-		logger.debug("用户登录，user=" + user.getMobile() + ",登录结果=responseResult:"
+		logger.debug("用户登录，user=" + user.getUsername() + ",登录结果=responseResult:"
 				+ responseResult);
 		return responseResult;
 	}
@@ -457,7 +457,7 @@ public class UserController {
 			return responseResult;
 		}
 		// 用户是否存在
-		User existUser = this.userService.findUserByMobile(user.getMobile());
+		User existUser = this.userService.findUserByName(user.getUsername());
 		if (existUser == null) {
 			responseResult.setMessage("该用户不存在，请您联系管理员");
 			logger.debug("用户登录，结果=responseResult:" + responseResult);
@@ -485,28 +485,28 @@ public class UserController {
 		try {
 			// 1、 封装用户名和密码到token令牌对象 [支持记住我]
 			AuthenticationToken token = new UsernamePasswordToken(
-					user.getMobile(), DigestUtils.md5Hex(user.getPassword()),
+					user.getUsername(), DigestUtils.md5Hex(user.getPassword()),
 					rememberMe);
 			// 2、 Subject调用login
 			Subject subject = SecurityUtils.getSubject();
 			// 在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查
 			// 每个Realm都能在必要时对提交的AuthenticationTokens作出反应
 			// 所以这一步在调用login(token)方法时,它会走到MyRealm.doGetAuthenticationInfo()方法中,具体验证方式详见此方法
-			logger.debug("用户登录，用户验证开始！user=" + user.getMobile());
+			logger.debug("用户登录，用户验证开始！user=" + user.getUsername());
 			subject.login(token);
 			responseResult.setCode(IStatusMessage.SystemStatus.SUCCESS
 					.getCode());
-			logger.info("用户登录，用户验证通过！user=" + user.getMobile());
+			logger.info("用户登录，用户验证通过！user=" + user.getUsername());
 		} catch (UnknownAccountException uae) {
-			logger.error("用户登录，用户验证未通过：未知用户！user=" + user.getMobile(), uae);
+			logger.error("用户登录，用户验证未通过：未知用户！user=" + user.getUsername(), uae);
 			responseResult.setMessage("该用户不存在，请您联系管理员");
 		} catch (IncorrectCredentialsException ice) {
 			// 获取输错次数
-			logger.error("用户登录，用户验证未通过：错误的凭证，密码输入错误！user=" + user.getMobile(),
+			logger.error("用户登录，用户验证未通过：错误的凭证，密码输入错误！user=" + user.getUsername(),
 					ice);
 			responseResult.setMessage("用户名或密码不正确");
 		} catch (LockedAccountException lae) {
-			logger.error("用户登录，用户验证未通过：账户已锁定！user=" + user.getMobile(), lae);
+			logger.error("用户登录，用户验证未通过：账户已锁定！user=" + user.getUsername(), lae);
 			responseResult.setMessage("账户已锁定");
 		} catch (ExcessiveAttemptsException eae) {
 			logger.error(
@@ -521,11 +521,11 @@ public class UserController {
 		 responseResult.setMessage("帐号已经禁止登录");
 		}*/catch (AuthenticationException ae) {
 			// 通过处理Shiro的运行时AuthenticationException就可以控制用户登录失败或密码错误时的情景
-			logger.error("用户登录，用户验证未通过：认证异常，异常信息如下！user=" + user.getMobile(),
+			logger.error("用户登录，用户验证未通过：认证异常，异常信息如下！user=" + user.getUsername(),
 					ae);
 			responseResult.setMessage("用户名或密码不正确");
 		} catch (Exception e) {
-			logger.error("用户登录，用户验证未通过：操作异常，异常信息如下！user=" + user.getMobile(), e);
+			logger.error("用户登录，用户验证未通过：操作异常，异常信息如下！user=" + user.getUsername(), e);
 			responseResult.setMessage("用户登录失败，请您稍后再试");
 		}
 		if (flag) {
@@ -533,10 +533,10 @@ public class UserController {
 			int num = this.userService.setUserLockNum(existUser.getId(), 1);
 			if (num < 1) {
 				logger.info("用户登录，用户名或密码错误次数大于5次,账户锁定失败！user="
-						+ user.getMobile());
+						+ user.getUsername());
 			}
 		}
-		logger.debug("用户登录，user=" + user.getMobile() + ",登录结果=responseResult:"
+		logger.debug("用户登录，user=" + user.getUsername() + ",登录结果=responseResult:"
 				+ responseResult);
 		return responseResult;
 	}

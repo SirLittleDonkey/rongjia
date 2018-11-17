@@ -57,29 +57,19 @@ public interface UserService {
 	 */
 	UserRolesVO getUserAndRoles(Integer id);
 
-	/**
-	 * 发送短信验证码
-	 * @param user
-	 * @return
-	 */
-	String sendMsg(UserDTO user);
+
 
 	/**
-	 * 根据手机号查询用户数据
-	 * @param mobile
+	 * 根据用户名查询用户数据
+	 * @param username
 	 * @return
 	 */
-	User findUserByMobile(String mobile);
+	User findUserByName(String username);
+
+
 
 	/**
-	 * 根据手机号发送短信验证码
-	 * @param mobile
-	 * @return
-	 */
-	String sendMessage(int userId, String mobile);
-
-	/**
-	 * 修改用户手机号
+	 * 修改用户密码
 	 * @param id
 	 * @param password
 	 * @return

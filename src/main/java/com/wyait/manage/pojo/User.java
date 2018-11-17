@@ -9,10 +9,6 @@ public class User implements Serializable {
 
 	private String username;
 
-	private String mobile;
-
-	private String email;
-
 	private String password;
 
 	private Integer insertUid;
@@ -24,10 +20,6 @@ public class User implements Serializable {
 	private Boolean isDel;
 
 	private Boolean isJob;
-
-	private String mcode;
-
-	private Date sendTime;
 
 	private Integer version;
 
@@ -45,22 +37,6 @@ public class User implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username == null ? null : username.trim();
-	}
-
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile == null ? null : mobile.trim();
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email == null ? null : email.trim();
 	}
 
 	public String getPassword() {
@@ -111,22 +87,6 @@ public class User implements Serializable {
 		this.isJob = isJob;
 	}
 
-	public String getMcode() {
-		return mcode;
-	}
-
-	public void setMcode(String mcode) {
-		this.mcode = mcode;
-	}
-
-	public Date getSendTime() {
-		return sendTime;
-	}
-
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
-
 	public Integer getVersion() {
 		return version;
 	}
@@ -135,14 +95,6 @@ public class User implements Serializable {
 		this.version = version;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", mobile="
-				+ mobile + ", email=" + email + ", password=" + password
-				+ ", insertUid=" + insertUid + ", insertTime=" + insertTime
-				+ ", updateTime=" + updateTime + ", isDel=" + isDel
-				+ ", isJob=" + isJob + ", mcode=" + mcode + ", sendTime="
-				+ sendTime + ", version=" + version + "]";
-	}
+
 
 }

@@ -1,18 +1,10 @@
 package com.wyait.manage.entity.basic;
 
-public class ProcedureDTO {
-    private Integer id;
+import com.wyait.manage.pojo.BasePojo;
+
+public class ProcedureDTO extends BasePojo {
     private String procedureCode;
     private String procedureName;
-    private boolean isDel;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getProcedureCode() {
         return procedureCode;
@@ -30,11 +22,4 @@ public class ProcedureDTO {
         this.procedureName = procedureName;
     }
 
-    public boolean isDel() {
-        return isDel;
-    }
-
-    public void setDel(boolean del) {
-        isDel = del;
-    }
 }

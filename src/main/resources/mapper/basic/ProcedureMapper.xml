@@ -5,12 +5,15 @@
         <id column="id" jdbcType="INTEGER" property="id"   />
         <result column="procedureCode" jdbcType="VARCHAR" property="procedureCode"></result>
         <result column="procedureName" jdbcType="VARCHAR" property="procedureCode"></result>
+        <result column="insert_uid" jdbcType="INTEGER" property="insertUid" />
+        <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="is_del" jdbcType="BIT" property="isDel" />
     </resultMap>
 
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getProcedures" resultType="com.wyait.manage.entity.basic.ProcedureDTO">
-        SELECT id, procedureCode, procedureName, is_del
+        SELECT id, procedureCode, procedureName, insert_uid, insert_time, update_time, is_del
         FROM proced
         <where>
             <if test="procedureSearchDTO.uprocedurecode != null and procedureSearchDTO.uprocedurecode != ''">
@@ -26,7 +29,7 @@
     <select id="findProcedureByProcedureCode" resultType="com.wyait.manage.pojo.basic.Procedure">
 		select
 		id, procedureCode,
-		procedureName, is_del
+		procedureName, insert_uid, insert_time, update_time, is_del
 		from proced
 		WHERE
 		procedureCode=#{procedureCode} and is_del=0
@@ -35,26 +38,27 @@
 
     <update id="updateByPrimaryKeySelective" parameterType="com.wyait.manage.pojo.basic.Procedure">
         update proced
-        <set>
-            <if test="procedureCode != null">
-                procedureCode = #{procedureCode,jdbcType=VARCHAR},
-            </if>
-            <if test="procedureName != null">
-                procedureName = #{procedureName,jdbcType=VARCHAR},
-            </if>
-            <if test="isDel != null">
-                is_del = #{isDel,jdbcType=BIT},
-            </if>
-        </set>
+        set
+        procedurecode =
+        #{procedureCode, jdbcType=VARCHAR},
+        procedurename =
+        #{procedureName, jdbcType=VARCHAR},
+        insert_uid =
+		#{insertUid,jdbcType=INTEGER},
+		insert_time =
+		#{insertTime,jdbcType=TIMESTAMP},
+		update_time =
+		#{updateTime,jdbcType=TIMESTAMP},
+		is_del = #{isDel,jdbcType=BIT}
         where id = #{id,jdbcType=INTEGER}
     </update>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.wyait.manage.pojo.basic.Procedure">
-		insert into proced (id, procedureCode, procedureName, is_del
+		insert into proced ( procedureCode, procedureName, insert_uid, insert_time, update_time, is_del
 		)
-		values (#{id,jdbcType=INTEGER}, #{procedureCode,jdbcType=VARCHAR},
-		#{procedureName,jdbcType=VARCHAR}, #{isDel,jdbcType=BIT}
+		values (#{procedureCode,jdbcType=VARCHAR},
+		#{procedureName,jdbcType=VARCHAR}, #{insertUid,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=BIT}
 		)
 	</insert>
 

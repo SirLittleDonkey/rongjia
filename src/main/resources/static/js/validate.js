@@ -10,11 +10,7 @@ function randomColor(min,max){
     var _b = randomNum(min,max);
     return "rgb("+_r+","+_g+","+_b+")";
 }
-//先阻止画布默认点击发生的行为再执行drawPic()方法
-document.getElementById("canvas").onclick = function(e){
-    e.preventDefault();
-    drawPic();
-};
+
 function drawPic(){
     //获取到元素canvas
     var $canvas = document.getElementById("canvas");

@@ -5,10 +5,6 @@ public class UserRoleDTO {
 
 	private String username;
 
-	private String mobile;
-
-	private String email;
-
 	private String password;
 
 	private Integer insertUid;
@@ -39,22 +35,6 @@ public class UserRoleDTO {
 
 	public void setUsername(String username) {
 		this.username = username == null ? null : username.trim();
-	}
-
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile == null ? null : mobile.trim();
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email == null ? null : email.trim();
 	}
 
 	public String getPassword() {
@@ -123,14 +103,6 @@ public class UserRoleDTO {
 		this.version = version;
 	}
 
-	@Override
-	public String toString() {
-		return "UserRoleDTO [id=" + id + ", username=" + username + ", mobile="
-				+ mobile + ", email=" + email + ", password=" + password
-				+ ", insertUid=" + insertUid + ", insertTime=" + insertTime
-				+ ", updateTime=" + updateTime + ", isDel=" + isDel
-				+ ", isJob=" + isJob + ", roleNames=" + roleNames
-				+ ", version=" + version + "]";
-	}
+
 
 }
