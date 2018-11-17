@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.business.ProdPlanMapper">
+
+    <!--=Start getUsers 分页查询工位列表userSearch -->
+    <select id="getProdPlans" resultType="com.wyait.manage.entity.business.ProdPlanDTO">
+        SELECT pp.cuscode, c.cusname, pp.workshopcode, ws.workshopname, pp.workstationcode, pp.invcode, i.invname, i.invstd,
+        plandate, planqty, planhour, pp.is_del
+        FROM prodplan pp
+        LEFT JOIN customer c ON pp.cuscode = c.cuscode
+        LEFT JOIN workshop ws ON pp.workshopcode = ws.workshopcode
+        LEFT JOIN workstation wst ON pp.workstationcode = wst.workstationcode
+        LEFT JOIN inventory i ON pp.invcode = i.invcode
+        <where>
+            <if test="prodPlanSearchDTO.ucuscode != null and prodPlanSearchDTO.ucuscode != ''">
+                AND pp.cuscode = #{prodPlanSearchDTO.ucuscode}
+            </if>
+            <if test="prodPlanSearchDTO.uworkshopcode != null and prodPlanSearchDTO.uworkshopcode != ''">
+                AND pp.workshopcode = #{prodPlanSearchDTO.uworkshopcode}
+            </if>
+            <if test="prodPlanSearchDTO.uworkstationcode != null and prodPlanSearchDTO.uworkstationcode != ''">
+                AND pp.workstationcode = #{prodPlanSearchDTO.uworkstationcode}
+            </if>
+            <if test="prodPlanSearchDTO.uinvcode != null and prodPlanSearchDTO.uinvcode != ''">
+                AND pp.invcode = #{prodPlanSearchDTO.uinvcode}
+            </if>
+            <if test="prodPlanSearchDTO.planDateStart != null and prodPlanSearchDTO.planDateStart != ''">
+                AND pp.planDate &gt;= #{prodPlanSearchDTO.planDateStart}
+            </if>
+            <if test="prodPlanSearchDTO.planDateEnd != null and prodPlanSearchDTO.planDateEnd != ''">
+                AND pp.planDate &lt;= #{prodPlanSearchDTO.planDateEnd}
+            </if>
+        </where>
+    </select>
+</mapper>
