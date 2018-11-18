@@ -32,7 +32,7 @@ $(function () {
                 {field: 'procedureCode', title: '工序号'},
                 {field: 'procedureName', title: '工序名'},
                 {field: 'hasUpload', title: '是否上传', templet: '#uploadcheck'},
-                {field: 'right', title:'操作', width: 140, align: 'center', toolbar: '#optBar'}
+                {field: 'right', title:'操作', width: 170, align: 'center', toolbar: '#optBar'}
             ]],
             done: function (res, curr, count) {
                 pageCurr = curr
@@ -49,6 +49,9 @@ $(function () {
             }else if(obj.event === 'recover'){
                 //恢复
                 recoverWorkStation(data, data.id, data.workStationCode)
+            }else if(obj.event === 'view'){
+                //浏览
+                viewWorkStation(data, data.id)
             }
         })
         //监听提交
@@ -60,13 +63,26 @@ $(function () {
     })
     //搜索框
     layui.use(['form'], function(){
-        var form = layui.form ,layer = layui.layer
+        var form = layui.form , layer = layui.layer
         //TODO 数据校验
         //监听搜索框
         form.on('submit(searchSubmit)', function(data){
             //重新加载table
             load(data)
             return false
+        })
+    })
+
+    layui.use('upload', function () {
+        upload = layui.upload
+        var uploadInst = upload.render({
+            elem: '#oiFile'
+            ,url: '/bussiness/'
+            ,accept: 'file' //普通文件
+            ,exts: 'pdf' //只允许上传压缩文件
+            ,done: function(res) {
+                console.log(res)
+            }
         })
     })
 })
@@ -79,4 +95,35 @@ function load(obj){
             curr: pageCurr  //从当前页码开始
         }
     })
+}
+
+function viewWorkStation(obj, id){
+
+}
+
+function addOperationInstruction(){
+    openOperationInstruction(null, "添加作业指导书")
+}
+
+function openOperationInstruction(id, title){
+    if(id == null || id == ""){
+        $("#id").val("");
+    }
+    layer.open({
+        type:1,
+        title: title,
+        fixed:false,
+        resize :false,
+        shadeClose: true,
+        area: ['550px'],
+        content:$('#setOperationInstruction'),
+        end:function(){
+            cleanOperationInstruction()
+        }
+    });
+}
+
+function cleanOperationInstruction(){
+    $("#invCode").val("")
+    $("#procedureCode").val("")
 }

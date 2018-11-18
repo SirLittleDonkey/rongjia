@@ -55,14 +55,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">工厂Code</label>
                 <div class="layui-input-inline">
-                    <input id="factoryCode" name="factoryCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">工厂名</label>
-                <div class="layui-input-inline">
-                    <input id="factoryName" name="factoryName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="factoryCode" name="factoryCode" lay-verify="required" autocomplete="off" class="layui-input" type="text" onclick=""/>
                 </div>
             </div>
 
@@ -70,13 +63,6 @@
                 <label class="layui-form-label">车间号</label>
                 <div class="layui-input-inline">
                     <input id="workShopCode" name="workShopCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">车间名</label>
-                <div class="layui-input-inline">
-                    <input id="workShopName" name="workShopName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
 
@@ -105,6 +91,7 @@
 
     <!--底部-->
     <div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="fragments/search/searchFactory :: searchFactory"></div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/basic/workstation.js"></script>
 

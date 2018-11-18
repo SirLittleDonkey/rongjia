@@ -35,6 +35,7 @@
 
         <script type="text/html" id="optBar">
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs" lay-event="view">浏览</a>
             {{#  if(d.del){ }}
             <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="recover">恢复</a>
             {{#  } else { }}
@@ -43,9 +44,9 @@
         </script>
         <script type="text/html" id="uploadcheck">
             {{#  if(d.hasUpload){ }}
-            <span >否</span>
-            {{#  } else { }}
             <span >是</span>
+            {{#  } else { }}
+            <span >否</span>
             {{#  } }}
         </script>
     </div>
@@ -62,20 +63,6 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">产品名称</label>
-                <div class="layui-input-inline">
-                    <input id="invName" name="invName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">规格型号</label>
-                <div class="layui-input-inline">
-                    <input id="invStd" name="invStd" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
                 <label class="layui-form-label">工序号</label>
                 <div class="layui-input-inline">
                     <input id="procedureCode" name="procedureCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
@@ -83,16 +70,9 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">工序名</label>
-                <div class="layui-input-inline">
-                    <input id="procedureName" name="procedureName" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
                 <label class="layui-form-label">上传文件</label>
                 <div class="layui-input-inline">
-                    <input id="file" name="file" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                    <button type="button" class="layui-btn" id="oiFile"><i class="layui-icon"></i>上传文件</button>
                 </div>
             </div>
             <div class="layui-form-item">

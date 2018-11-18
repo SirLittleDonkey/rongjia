@@ -163,9 +163,7 @@ function getWorkStation(obj, id){
                 if(data.msg == "ok" && data.workStation != null){
                     $('#id').val(data.workStation.id == null ? '': data.workStation.id)
                     $('#factoryCode').val(data.workStation.factoryCode == null ? '': data.workStation.factoryCode)
-                    $('#factoryName').val(data.workStation.factoryName == null ? '': data.workStation.factoryName)
                     $('#workShopCode').val(data.workStation.workShopCode == null ? '': data.workStation.workShopCode)
-                    $('#workShopName').val(data.workStation.workShopName == null ? '': data.workStation.workShopName)
                     $('#workStationCode').val(data.workStation.workStationCode == null ? '': data.workStation.workStationCode)
                     $('#ipAddress').val(data.workStation.ipAddress == null ? '': data.workStation.ipAddress)
                     openWorkStation(id, "设置工位")
@@ -200,9 +198,7 @@ function openWorkStation(id, title){
 
 function cleanWorkStation(){
     $('#factoryCode').val('')
-    $('#factoryName').val('')
     $('#workShopCode').val('')
-    $('#workShopName').val('')
     $('#workStationCode').val('')
     $('#ipAddress').val('')
 }
@@ -242,3 +238,4 @@ function formSubmit(obj){
 
 
 }
+

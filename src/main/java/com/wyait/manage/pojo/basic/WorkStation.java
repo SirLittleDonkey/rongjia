@@ -1,16 +1,14 @@
 package com.wyait.manage.pojo.basic;
 
-public class WorkStation {
+import com.wyait.manage.pojo.BasePojo;
+
+public class WorkStation extends BasePojo {
     private static final long serialVersionUID = -3096736268081409238L;
     private Integer id;
 
     private String factoryCode;
 
-    private String factoryName;
-
     private String workShopCode;
-
-    private String workShopName;
 
     private String workStationCode;
 
@@ -34,28 +32,12 @@ public class WorkStation {
         this.factoryCode = factoryCode;
     }
 
-    public String getFactoryName() {
-        return factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
-
     public String getWorkShopCode() {
         return workShopCode;
     }
 
     public void setWorkShopCode(String workShopCode) {
         this.workShopCode = workShopCode;
-    }
-
-    public String getWorkShopName() {
-        return workShopName;
-    }
-
-    public void setWorkShopName(String workShopName) {
-        this.workShopName = workShopName;
     }
 
     public String getWorkStationCode() {

@@ -6,8 +6,10 @@ import com.wyait.manage.dao.basic.WorkStationMapper;
 import com.wyait.manage.entity.basic.WorkStationDTO;
 import com.wyait.manage.entity.basic.WorkStationSearchDTO;
 import com.wyait.manage.entity.basic.WorkStationVO;
+import com.wyait.manage.pojo.User;
 import com.wyait.manage.pojo.basic.WorkStation;
 import com.wyait.manage.utils.PageDataResult;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +57,15 @@ public class WorkStationServiceImpl implements WorkStationService{
             RuntimeException.class, Exception.class })
     public String setWorkStation(WorkStation workStation) {
         int workStationId;
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
         if(workStation.getId() != null){
             WorkStation existWorkStation = this.workStationMapper.findWorkStationByWorkStationCode(workStation.getWorkStationCode());
             if(null != existWorkStation
-                    && String.valueOf(existWorkStation.getId()).equals(
+                    && !String.valueOf(existWorkStation.getId()).equals(
                             String.valueOf(workStation.getId()))){
                 return "该工位号已存在";
             }
+            workStation.setInsertUid(user.getId());
             this.workStationMapper.updateByPrimaryKeySelective(workStation);
         }else {
             //判断工位是否已经存在
@@ -70,6 +74,7 @@ public class WorkStationServiceImpl implements WorkStationService{
                 return "该工位号已存在";
             }
             workStation.setIsDel(false);
+            workStation.setInsertUid(user.getId());
             this.workStationMapper.insert(workStation);
         }
         return "ok";

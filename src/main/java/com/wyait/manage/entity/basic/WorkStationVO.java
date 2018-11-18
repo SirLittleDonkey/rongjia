@@ -5,11 +5,7 @@ public class WorkStationVO {
 
     private String factoryCode;
 
-    private String factoryName;
-
     private String workShopCode;
-
-    private String workShopName;
 
     private String workStationCode;
 
@@ -33,28 +29,12 @@ public class WorkStationVO {
         this.factoryCode = factoryCode;
     }
 
-    public String getFactoryName() {
-        return factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
-
     public String getWorkShopCode() {
         return workShopCode;
     }
 
     public void setWorkShopCode(String workShopCode) {
         this.workShopCode = workShopCode;
-    }
-
-    public String getWorkShopName() {
-        return workShopName;
-    }
-
-    public void setWorkShopName(String workShopName) {
-        this.workShopName = workShopName;
     }
 
     public String getWorkStationCode() {

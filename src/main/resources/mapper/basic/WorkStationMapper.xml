@@ -14,17 +14,19 @@
 
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getWorkStations" resultType="com.wyait.manage.entity.basic.WorkStationDTO">
-        SELECT id, factoryCode, factoryName, workShopCode, workShopName, workStationCode, ipAddress, is_del
-        FROM workstation
+        SELECT ws.id, ws.factoryCode, factoryName, ws.workShopCode, workShopName, workStationCode, ipAddress, ws.is_del
+        FROM workstation ws
+        INNER JOIN rj_factory f ON ws.factorycode = f.factorycode AND f.is_del = 0
+        INNER JOIN workshop wsh ON ws.workshopcode = wsh.workshopcode AND wsh.is_del = 0
         <where>
             <if test="workStationSearchDTO.ufoctory != null and workStationSearchDTO.ufoctory != ''">
-                AND factorycode = #{workStationSearchDTO.ufoctory}
+                AND ws.factorycode = #{workStationSearchDTO.ufoctory}
             </if>
             <if test="workStationSearchDTO.uworkshop != null and workStationSearchDTO.uworkshop != ''">
-                AND workshopcode = #{workStationSearchDTO.uworkshop}
+                AND ws.workshopcode = #{workStationSearchDTO.uworkshop}
             </if>
             <if test="workStationSearchDTO.uworkstation != null and workStationSearchDTO.uworkstation != ''">
-                AND workstationcode = #{workStationSearchDTO.uworkstation}
+                AND ws.workstationcode = #{workStationSearchDTO.uworkstation}
             </if>
         </where>
     </select>
@@ -44,15 +46,13 @@
     <resultMap id="getWorkStation" type="com.wyait.manage.entity.basic.WorkStationVO">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="factoryCode" jdbcType="VARCHAR" property="factoryCode"></result>
-        <result column="factoryName" jdbcType="VARCHAR" property="factoryName"></result>
         <result column="workShopCode" jdbcType="VARCHAR" property="workShopCode"></result>
-        <result column="workShopName" jdbcType="VARCHAR" property="workShopName"></result>
         <result column="workStationCode" jdbcType="VARCHAR" property="workStationCode"></result>
         <result column="ipAddress" jdbcType="VARCHAR" property="ipAddress"></result>
         <result column="is_del" jdbcType="BIT" property="isDel" />
     </resultMap>
     <select id="getWorkStation" resultMap="getWorkStation">
-		SELECT id, factoryCode, factoryName, workShopCode, workShopName, workStationCode, ipAddress, is_del
+		SELECT id, factoryCode, workShopCode, workStationCode, ipAddress, is_del
         FROM workstation
         WHERE id = #{id} AND is_del = 0
 	</select>
@@ -64,14 +64,8 @@
             <if test="factoryCode != null">
                 factoryCode = #{factoryCode,jdbcType=VARCHAR},
             </if>
-            <if test="factoryName != null">
-                factoryName = #{factoryName,jdbcType=VARCHAR},
-            </if>
             <if test="workShopCode != null">
                 workShopCode = #{workShopCode,jdbcType=VARCHAR},
-            </if>
-            <if test="workShopName != null">
-                workShopName = #{workShopName,jdbcType=VARCHAR},
             </if>
             <if test="workStationCode != null">
                 workStationCode = #{workStationCode,jdbcType=VARCHAR},
@@ -79,6 +73,10 @@
             <if test="ipAddress != null">
                 ipAddress = #{ipAddress,jdbcType=VARCHAR},
             </if>
+            <if test="insertUid != null">
+                insert_uid = #{insertUid,jdbcType=INTEGER},
+            </if>
+            update_time = getdate(),
             <if test="isDel != null">
                 is_del = #{isDel,jdbcType=BIT},
             </if>
@@ -88,16 +86,18 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.wyait.manage.pojo.basic.WorkStation">
-		insert into workstation (id, factoryCode, factoryName,
-		workShopCode, workShopName,
+		insert into workstation ( factoryCode,
+		workShopCode,
 		workStationCode,
-		ipAddress, is_del
+		ipAddress, insert_uid, insert_time, is_del
 		)
-		values (#{id,jdbcType=INTEGER}, #{factoryCode,jdbcType=VARCHAR},
-		#{factoryName,jdbcType=VARCHAR},
+		values ( #{factoryCode,jdbcType=VARCHAR},
 		#{workShopCode,jdbcType=VARCHAR},
-		#{workShopName,jdbcType=VARCHAR}, #{workStationCode,jdbcType=VARCHAR},
-		#{ipAddress,jdbcType=VARCHAR}, #{isDel,jdbcType=BIT}
+		#{workStationCode,jdbcType=VARCHAR},
+		#{ipAddress,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
 		)
 	</insert>
 
@@ -105,7 +105,7 @@
     <select id="findWorkStationByWorkStationCode" resultType="com.wyait.manage.pojo.basic.WorkStation">
 		select
 		id, factoryCode,
-		factoryName,workShopCode, workShopName, workStationCode ipAddress, is_del
+		workShopCode, workStationCode ipAddress, is_del
 		from workstation
 		WHERE
 		workStationCode=#{workStationCode} and is_del=0

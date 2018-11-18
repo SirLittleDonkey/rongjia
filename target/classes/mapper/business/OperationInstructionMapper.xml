@@ -4,15 +4,15 @@
 
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getOIs" resultType="com.wyait.manage.entity.business.oiDTO">
-        SELECT oi.id, oi.invCode, invName, invStd, oi.procedureCode, procedureName, version, filepath , is_del
+        SELECT oi.id, oi.invCode, cinvName as invName, cinvStd as invStd, oi.procedureCode, procedureName, version, filepath , case when filepath is null then 0  when filepath  = '' then 0  else 1 end as hasupload, oi.is_del
         FROM operationinstruction oi
-        INNER JOIN Inventory inv on oi.invcode = inv.invcode
+        INNER JOIN Inventory inv on oi.invcode = inv.cinvcode
         INNER JOIN proced pr on oi.procedurecode = pr.procedurecode
         <where>
-            <if test="oiSearchDTO.invCode != null and oiSearchDTO.invCode != ''">
+            <if test="oiSearchDTO.uinvcode != null and oiSearchDTO.uinvcode != ''">
                 AND oi.invCode = #{oiSearchDTO.invCode}
             </if>
-            <if test="oiSearchDTO.procedureCode != null and oiSearchDTO.procedureCode != ''">
+            <if test="oiSearchDTO.uprocedurecode != null and oiSearchDTO.uprocedurecode != ''">
                 AND oi.procedureCode = #{oiSearchDTO.procedurecode}
             </if>
         </where>
