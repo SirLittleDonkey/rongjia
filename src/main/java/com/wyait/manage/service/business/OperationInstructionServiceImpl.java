@@ -5,14 +5,22 @@ import com.github.pagehelper.PageInfo;
 import com.wyait.manage.dao.business.OperationInstructionMapper;
 import com.wyait.manage.entity.business.oiDTO;
 import com.wyait.manage.entity.business.oiSearchDTO;
+import com.wyait.manage.entity.business.oiSetDTO;
+import com.wyait.manage.pojo.User;
+import com.wyait.manage.pojo.business.OperationInstruction;
 import com.wyait.manage.service.basic.WorkStationServiceImpl;
 import com.wyait.manage.utils.PageDataResult;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OperationInstructionServiceImpl implements OperationInstructionService{
@@ -33,5 +41,67 @@ public class OperationInstructionServiceImpl implements OperationInstructionServ
         pdr.setTotals(Long.valueOf(pageInfo.getTotal()).intValue());
         pdr.setList(oiDTOs);
         return pdr;
+    }
+
+    @Override
+    public String setOperationInstruction(oiSetDTO oiSetDTO) {
+        int workStationId;
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if(oiSetDTO.getId() != null){
+
+            OperationInstruction existInstruction = this.operationInstructionMapper.findOperationInstructionByIPV(oiSetDTO.getInvCode(), oiSetDTO.getProcedureCode(), oiSetDTO.getVersion());
+            if(null != existInstruction
+                    && !String.valueOf(existInstruction.getId()).equals(
+                    String.valueOf(oiSetDTO.getId())) && oiSetDTO.getFile().getOriginalFilename().equals("")){
+                return "该作业指导书已存在";
+            }
+            oiSetDTO.setInsertUid(user.getId());
+            oiSetDTO.setIsDel(false);
+            if(!oiSetDTO.getFile().getOriginalFilename().equals("")) {
+                oiSetDTO.setFilePath(saveFileInServer(oiSetDTO.getFile()));
+            }
+            this.operationInstructionMapper.update(oiSetDTO);
+        }else {
+            //判断工位是否已经存在
+            OperationInstruction existInstruction = this.operationInstructionMapper.findOperationInstructionByInvCodeAndProcedureCode(oiSetDTO.getInvCode(), oiSetDTO.getProcedureCode());
+            if(null != existInstruction){
+                //版本号+1
+                oiSetDTO.setInsertUid(user.getId());
+                oiSetDTO.setIsDel(false);
+                System.out.println(oiSetDTO.getFile().getOriginalFilename());
+                if(!oiSetDTO.getFile().getOriginalFilename().equals("")) {
+                    oiSetDTO.setFilePath(saveFileInServer(oiSetDTO.getFile()));
+                }
+                oiSetDTO.setVersion(existInstruction.getVersion() + 1);
+                this.operationInstructionMapper.insert(oiSetDTO);
+            }else{
+                //新增，版本号为1
+                oiSetDTO.setInsertUid(user.getId());
+                oiSetDTO.setIsDel(false);
+                if(!oiSetDTO.getFile().getOriginalFilename().equals("")) {
+                    oiSetDTO.setFilePath(saveFileInServer(oiSetDTO.getFile()));
+                }
+                this.operationInstructionMapper.insertTotallyNew(oiSetDTO);
+
+            }
+        }
+        return "ok";
+    }
+
+    @Override
+    public OperationInstruction getOperationInstruction(Integer id) {
+        return this.operationInstructionMapper.getOperationInstruction(id);
+    }
+
+    public String saveFileInServer(MultipartFile file){
+        String fielName = UUID.randomUUID().toString();
+        String filePath = "E:/rongjia/" + fielName + ".pdf";
+        File desFile = new File(filePath);
+        try {
+            file.transferTo(desFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return filePath;
     }
 }

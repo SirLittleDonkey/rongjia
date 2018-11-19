@@ -68,8 +68,13 @@
                     <input id="procedureCode" name="procedureCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
                 </div>
             </div>
-
-            <div class="layui-form-item">
+            <div class="layui-form-item" id="versionItem">
+                <label class="layui-form-label">版本号</label>
+                <div class="layui-input-inline">
+                    <input id="version" name="version" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item" id="oiUpload">
                 <label class="layui-form-label">上传文件</label>
                 <div class="layui-input-inline">
                     <button type="button" class="layui-btn" id="oiFile"><i class="layui-icon"></i>上传文件</button>
@@ -85,10 +90,15 @@
         </form>
     </div>
 
+    <!--添加或编辑用户-->
+    <div id="viewOperationInstruction" class="layer_self_wrap" style="width:800px; height:100px; display:none;">
+        <div id="example1" style="width:800px; height:100px;"></div>
+    </div>
     <!--底部-->
     <div th:replace="fragments/footer :: footer"></div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/business/operationinstruction.js"></script>
+    <script src="/pdfObject/pdfobject.js"></script>
 
 </div>
 </body>

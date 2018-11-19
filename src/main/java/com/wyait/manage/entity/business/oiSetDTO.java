@@ -1,20 +1,22 @@
-package com.wyait.manage.pojo.business;
+package com.wyait.manage.entity.business;
 
 import com.wyait.manage.pojo.BasePojo;
+import org.springframework.web.multipart.MultipartFile;
 
-public class OperationInstruction extends BasePojo {
+import java.io.Serializable;
+
+public class oiSetDTO extends BasePojo implements Serializable {
     private Integer id;
     private String invCode;
     private String procedureCode;
     private Integer version;
-    private String filepath;
+    private String filePath;
+    private MultipartFile file;
 
-    @Override
     public Integer getId() {
         return id;
     }
 
-    @Override
     public void setId(Integer id) {
         this.id = id;
     }
@@ -35,12 +37,20 @@ public class OperationInstruction extends BasePojo {
         this.procedureCode = procedureCode;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public MultipartFile getFile() {
+        return file;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public Integer getVersion() {

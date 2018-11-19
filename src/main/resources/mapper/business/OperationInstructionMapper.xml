@@ -17,4 +17,75 @@
             </if>
         </where>
     </select>
+
+    <select id="findOperationInstructionByInvCodeAndProcedureCode" resultType="com.wyait.manage.pojo.business.OperationInstruction">
+        SELECT oi.id, oi.invcode, oi.procedureCode, oi.version, oi.filepath
+        FROM operationinstruction oi
+        INNER JOIN(
+          SELECT invCode, procedureCode, MAX(version) version
+          FROM operationinstruction
+          GROUP BY invCode, procedureCode) ma
+        ON oi.invcode = ma.invcode AND oi.procedureCode = ma.procedurecode AND oi.version = ma.version
+        WHERE oi.invCode = #{invCode} AND oi.procedureCode = #{procedureCode} AND is_del = 0
+    </select>
+
+    <insert id="insertTotallyNew" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.oiSetDTO">
+        insert into operationinstruction ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		1,
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.oiSetDTO">
+        insert into operationinstruction ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		#{version,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <select id="getOperationInstruction" resultType="com.wyait.manage.pojo.business.OperationInstruction">
+        SELECT id, invCode, procedureCode, version, filePath
+        FROM operationinstruction
+        WHERE id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="findOperationInstructionByIPV" resultType="com.wyait.manage.pojo.business.OperationInstruction">
+        SELECT oi.id, oi.invcode, oi.procedureCode, oi.version, oi.filepath
+        FROM operationinstruction oi
+        WHERE oi.invCode = #{invCode} AND oi.procedureCode = #{procedureCode} AND oi.version = #{version} AND is_del = 0
+    </select>
+
+    <update id="update">
+        update operationinstruction
+		set
+		invCode = #{invCode,jdbcType=NVARCHAR},
+		procedureCode = #{procedureCode,jdbcType=NVARCHAR},
+		version = #{version,jdbcType=INTEGER},
+		filePath = #{filePath,jdbcType=NVARCHAR},
+		insert_uid = #{insertUid,jdbcType=INTEGER},
+		update_time = getdate(),
+		is_del = #{isDel,jdbcType=BIT}
+		where id =
+		#{id,jdbcType=INTEGER}
+    </update>
 </mapper>
