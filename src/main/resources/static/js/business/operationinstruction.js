@@ -98,10 +98,6 @@ function load(obj){
     })
 }
 
-function viewWorkStation(obj, id){
-
-}
-
 function addOperationInstruction(){
     $('#versionItem').attr('style','display:none;')
     openOperationInstruction(null, "添加作业指导书")

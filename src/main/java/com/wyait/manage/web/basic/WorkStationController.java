@@ -149,6 +149,7 @@ public class WorkStationController {
             }
             // 查询工位
             WorkStationVO workStationVO = workStationService.getWorkStation(id);
+
             logger.debug("查询工位数据！wsvo=" + workStationVO);
             if (null != workStationVO) {
                 map.put("workStation", workStationVO);

@@ -4,13 +4,13 @@
 
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getProdPlans" resultType="com.wyait.manage.entity.business.ProdPlanDTO">
-        SELECT pp.cuscode, c.cusname, pp.workshopcode, ws.workshopname, pp.workstationcode, pp.invcode, i.invname, i.invstd,
+        SELECT pp.id, pp.cuscode, c.ccusname as cusname, pp.workshopcode, ws.workshopname, pp.workstationcode, pp.invcode, i.cinvname as invname, i.cinvstd as invstd,
         plandate, planqty, planhour, pp.is_del
         FROM prodplan pp
-        LEFT JOIN customer c ON pp.cuscode = c.cuscode
+        LEFT JOIN customer c ON pp.cuscode = c.ccuscode
         LEFT JOIN workshop ws ON pp.workshopcode = ws.workshopcode
         LEFT JOIN workstation wst ON pp.workstationcode = wst.workstationcode
-        LEFT JOIN inventory i ON pp.invcode = i.invcode
+        LEFT JOIN inventory i ON pp.invcode = i.cinvcode
         <where>
             <if test="prodPlanSearchDTO.ucuscode != null and prodPlanSearchDTO.ucuscode != ''">
                 AND pp.cuscode = #{prodPlanSearchDTO.ucuscode}
@@ -32,4 +32,44 @@
             </if>
         </where>
     </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.ppSetDTO">
+        insert into prodplan ( cusCode,
+		workshopCode, workstationCode, invCode, plandate, planqty, planhour,
+		insert_uid, insert_time, is_del
+		)
+		values ( #{cusCode,jdbcType=NVARCHAR},
+		#{workshopCode,jdbcType=NVARCHAR},
+		#{workstationCode,jdbcType=NVARCHAR},
+		#{invCode,jdbcType=NVARCHAR},
+		#{planDate,jdbcType=TIMESTAMP},
+		#{planQty,jdbcType=INTEGER},
+		#{planHour,jdbcType=DOUBLE},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <select id="getProdPlan" resultType="com.wyait.manage.entity.business.ProdPlanVO">
+        SELECT id, cusCode, workshopCode, workstationCode, invCode, planDate, planQty, planHour
+        FROM prodplan
+        WHERE id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <update id="update" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.ppSetDTO">
+        update prodplan
+        SET cusCode = #{cusCode,jdbcType=NVARCHAR},
+        workshopCode = #{workshopCode,jdbcType=NVARCHAR},
+		workstationCode = #{workstationCode,jdbcType=NVARCHAR},
+		invCode = #{invCode,jdbcType=NVARCHAR},
+		planDate = #{planDate,jdbcType=TIMESTAMP},
+		planQty = #{planQty,jdbcType=INTEGER},
+		planHour = #{planHour,jdbcType=DOUBLE},
+		insert_uid = #{insertUid,jdbcType=INTEGER},
+		update_time = getdate()
+        WHERE id = #{id, jdbcType=INTEGER}
+    </update>
 </mapper>

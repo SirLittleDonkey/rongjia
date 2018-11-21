@@ -69,7 +69,62 @@
         </script>
     </div>
 
+    <!--添加或编辑生产计划-->
+    <div id="setProdPlan" class="layer_self_wrap" style="width:500px;display:none;">
+        <form id="prodPlanForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+            <input id="id" type="hidden" name="id"/>
+            <div class="layui-form-item">
+                <label class="layui-form-label">客户编码</label>
+                <div class="layui-input-inline">
+                    <input id="cusCode" name="cusCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
 
+            <div class="layui-form-item">
+                <label class="layui-form-label">车间号</label>
+                <div class="layui-input-inline">
+                    <input id="workshopCode" name="workshopCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item" >
+                <label class="layui-form-label">工位号</label>
+                <div class="layui-input-inline">
+                    <input id="workstationCode" name="workstationCode" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品编码</label>
+                <div class="layui-input-inline">
+                    <input id="invCode" name="invCode" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">计划日期</label>
+                <div class="layui-input-inline">
+                    <input  name="planDate" id="planDate" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">计划数</label>
+                <div class="layui-input-inline">
+                    <input id="planQty" name="planQty" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">加工小时数</label>
+                <div class="layui-input-inline">
+                    <input id="planHour" name="planHour" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-left: 10px;">
+                    <button class="layui-btn"  lay-submit="" lay-filter="prodPlanSubmit">提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
 
     <!--底部-->
     <div th:replace="fragments/footer :: footer"></div>
