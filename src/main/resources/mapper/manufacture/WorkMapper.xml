@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.manufacture.WorkMapper">
+
+    <select id="getDailyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanDTO">
+        SELECT w.prodPlanId, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, w.qualifiedqty, w.unqualifiedqty, w.hasInspected
+        FROM prodplan pp
+        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN proced p ON pp.procedurecode = p.procedurecode
+        LEFT JOIN work w ON pp.id = w.prodPlanId
+        WHERE pp.workstationcode = #{workStationCode} AND CONVERT(varchar,plandate,23) = CONVERT(varchar,GETDATE(),23)
+    </select>
+
+    <select id="getWorkStationCodeByIpAddress" resultType="String">
+        SELECT workStationCode
+        FROM workstation
+        WHERE ipaddress = #{ipAddress, jdbcType=NVARCHAR}
+    </select>
+
+    <select id="getStartTime" resultType="java.util.Date">
+        SELECT startTime
+        FROM work
+        WHERE prodPlanId = #{prodPlanId}
+    </select>
+
+    <update id="setStartTime">
+        UPDATE work
+        SET startTime = getdate()
+        WHERE prodPlanId = #{prodPlanId}
+    </update>
+
+    <select id="getWorkVO" resultType="com.wyait.manage.entity.manufacture.WorkVO">
+        SELECT TOP(1) w.prodPlanId, planqty, w.startTime, pp.invcode, i.cInvCode as invCode, i.cInvStd as invStd, pp.procedurecode, p.procedurename, w.realQty, o.filepath as pdfPath
+        FROM prodplan pp
+        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN proced p ON pp.procedurecode = p.procedurecode
+        LEFT JOIN work w ON pp.id = w.prodPlanId
+        LEFT JOIN operationinstruction o ON pp.invcode = o.invcode AND pp.procedurecode = o.procedurecode
+        WHERE prodPlanId = #{prodPlanId}
+        ORDER BY o.version DESC
+    </select>
+</mapper>

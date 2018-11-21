@@ -1,14 +1,20 @@
 /**
- *工位管理
+ *工位看板管理
  */
 var pageCurr;
+var workStationCode;
 $(function(){
+    $.post("/manufacture/getWorkStationCode", function(data){
+        workStationCode = data
+        $("#workStationCode").html("工位编号：" + workStationCode)
+    })
+
     layui.use('table', function(){
         var table = layui.table
-
+        var form = layui.form
         tableIns = table.render({
-            elem: '#currentPlanList'
-            ,url:'/manufacture/getCurrentPlan'
+            elem: '#dailyWorkPlanList'
+            ,url:'/manufacture/getDailyWorkPlan?workStationCode=' + workStationCode
             ,method: 'post' //默认：get请求
             ,cellMinWidth: 80,
             request: {
@@ -22,13 +28,13 @@ $(function(){
             }
             ,cols: [[
                 {type:'numbers'}
-                ,{field:'id', title:'ID',width:80, unresize: true}
-                ,{field:'date', title:'日期'}
+                ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true}
+                ,{field:'plandate', title:'日期'}
                 ,{field:'invCode', title:'产品编号'}
                 ,{field:'invName', title: '产品名称'}
                 ,{field:'invStd', title: '规格型号'}
                 ,{field:'procedureName', title: '工序'}
-                ,{field:'planTime', title:'计划加工小时'}
+                ,{field:'planHour', title:'计划加工小时'}
                 ,{field:'planQty', title:'计划数量'}
                 ,{field:'qualifiedQty', title:'合格数量'}
                 ,{field:'unqualifiedQty', title:'不合格数量'}
@@ -46,11 +52,11 @@ $(function(){
                 pageCurr=curr;
             }
         })
-        table.on('tool(currentPlanTable)',function(obj){
+        table.on('tool(dailyWorkPlanTable)',function(obj){
             var data = obj.data
             if(obj.event === 'start'){
                 //开工
-
+                startWork(data, data.prodPlanId)
             }
         })
     })
@@ -59,8 +65,8 @@ $(function(){
         var table = layui.table
 
         tableIns = table.render({
-            elem: '#historyPlanList'
-            ,url:'/manufacture/getHistoryPlan'
+            elem: '#weeklyWorkPlanList'
+            ,url:'/manufacture/getWeeklyWorkPlan'
             ,method: 'post' //默认：get请求
             ,cellMinWidth: 80
             ,page: true,
@@ -75,7 +81,7 @@ $(function(){
             }
             ,cols: [[
                 {type:'numbers'}
-                ,{field:'id', title:'ID',width:80, unresize: true}
+                ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true}
                 ,{field:'date', title:'日期'}
                 ,{field:'invCode', title:'产品编号'}
                 ,{field:'invName', title: '产品名称'}
@@ -98,13 +104,6 @@ $(function(){
                 pageCurr=curr;
             }
         })
-        table.on('tool(currentPlanTable)',function(obj){
-            var data = obj.data
-            if(obj.event === 'start'){
-                //开工
-
-            }
-        })
     })
 })
 
@@ -120,4 +119,41 @@ function load(obj){
     });
 }
 
+function startWork(obj, prodPlanId){
+    //回显数据
+    $.get("/manufacture/startWork", {"prodPlanId": prodPlanId}, function(data){
+        if(isLogin(data)){
+            if(data.msg == "ok" && data.workVO != null){
+                $('#prodPlanId').val(data.workVO.prodPlanId == null ? '': data.workVO.prodPlanId)
+                $('#userName').html(data.workVO.userName == null ? '': data.workVO.userName)
+                $('#planQty').html(data.workVO.planQty == null ? '': data.workVO.planQty)
+                $('#startTime').html(data.workVO.startTime == null ? '': data.workVO.startTime)
+                $('#invCode').html(data.workVO.invCode == null ? '': data.workVO.invCode)
+                $('#procedureName').html(data.workVO.procedureName == null ? '': data.workVO.procedureName)
+                $('#realQty').html(data.workVO.realQty == null ? '': data.workVO.realQty)
+                $('#userName').val(data.workVO.pdfPath == null ? '': data.workVO.pdfPath)
+                PDFObject.embed("/business/getPDF?filePath=" + data.workVO.pdfPath, "#example1")
+                layui.use('element', function() {
+                    var $ = layui.jquery
+                        , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+                    element.tabChange('demo', 'startWork'); //切换到：用户管理
+                })
+            }else{
+                //弹出错误提示
+                layer.alert(data.msg,function () {
+                    layer.closeAll();
+                });
+            }
+        }
+    })
+
+}
+
+function qualitySubmit(){
+
+}
+
+function unqualitySubmit(){
+
+}
 
