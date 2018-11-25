@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.manufacture.DeliveryMapper">
+    <select id="getDailyDeliveryList" resultType="com.wyait.manage.entity.manufacture.DailyDeliveryDTO">
+        SELECT sm.cCusCode AS cusCode, sm.cCusName AS cusName, sm.cSOCode AS soCode, sb.cInvCode AS invCode, sb.cInvName AS invName, sb.dPreDate AS preDate, sb.iQuantity as planQty,  db.iQuantity as delyQty
+        FROM SO_SOMain sm
+        INNER JOIN SO_SODetails sb ON sm.id = sb.id
+        LEFT JOIN DispatchLists db ON sm.cSOCode = db.cSOCode AND sb.iRowNo = db.iorderrowno
+        WHERE sb.dPreDate = '2018-07-02'
+    </select>
+</mapper>

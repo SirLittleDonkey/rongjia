@@ -10,6 +10,7 @@ public class ppSetDTO extends BasePojo {
     private String workshopCode;
     private String workstationCode;
     private String invCode;
+    private String procedureCode;
     private String planDate;
     private Integer planQty;
     private Double planHour;
@@ -76,5 +77,13 @@ public class ppSetDTO extends BasePojo {
 
     public void setPlanHour(Double planHour) {
         this.planHour = planHour;
+    }
+
+    public String getProcedureCode() {
+        return procedureCode;
+    }
+
+    public void setProcedureCode(String procedureCode) {
+        this.procedureCode = procedureCode;
     }
 }

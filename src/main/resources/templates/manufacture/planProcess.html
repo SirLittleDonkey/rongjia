@@ -28,6 +28,19 @@
                 <button class="layui-btn"  lay-submit="" lay-filter="searchSubmit">提交</button>
             </div>
         </form>
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 3%">
+            <legend style="margin-left: 45%"><span style="font-weight: bold;font-size:30px;">计划与进程看板</span></legend>
+        </fieldset>
+        <div class="layui-row">
+            <div class="layui-col-md11">
+                <div class="grid-demo"></div>
+            </div>
+            <div class="layui-col-md1">
+                <div class="grid-demo">当前时间</div>
+            </div>
+        </div>
+        <table id="planProcessList" lay-filter="planProcessTable"></table>
     </div>
 
     <!--底部-->

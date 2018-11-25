@@ -11,7 +11,7 @@ $(function(){
 
     layui.use('table', function(){
         var table = layui.table
-
+        var form = layui.form
         tableIns = table.render({
             elem: '#dailyWorkPlanList'
             ,url:'/manufacture/getDailyWorkPlan?workStationCode=' + workStationCode
@@ -146,6 +146,14 @@ function startWork(obj, prodPlanId){
             }
         }
     })
+
+}
+
+function qualitySubmit(){
+
+}
+
+function unqualitySubmit(){
 
 }
 

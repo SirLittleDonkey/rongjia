@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html  xmlns:th="http://www.thymeleaf.org"
        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head th:include="layout :: htmlhead" th:with="title='质检看板'"></head>
+<head th:include="layout :: htmlhead" th:with="title='工位看板'"></head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <!--头-->
@@ -11,10 +11,10 @@
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 1px;">
             <legend id="workStationCode"></legend>
         </fieldset>
-        <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+        <div class="layui-tab" lay-filter="demo">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="11">工作计划</li>
-                <li lay-id="22">开工</li>
+                <li class="layui-this" lay-id="startWork">开工</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
@@ -24,23 +24,68 @@
                             <div class="layui-card-body">
                                 <table id="dailyWorkPlanList" lay-filter="dailyWorkPlanTable"></table>
                                 <script type="text/html" id="optBar">
-                                    {{#  if(d.hasInspected){ }}
-                                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="start">首检</a>
+                                    {{#  if(!d.hasInspected){ }}
+                                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="firstInspect">首检</a>
+                                    {{#  } }}
                                 </script>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div class="layui-tab-item">
                     <div class="layui-col-md12">
                         <div class="layui-card">
-                            <div class="layui-card-header">历史工作计划执行情况（一周内）</div>
+                            <div class="layui-card-header">加工信息</div>
                             <div class="layui-card-body">
-                                <table id="weeklyWorkPlanList" lay-filter="weeklyWorkPlanTable"></table>
+                                <div class="layui-row">
+                                    <input id="prodPlanId" type="hidden" name="prodPlanId"/>
+                                    <div class="layui-col-md1">
+                                        产品编码：
+                                    </div>
+                                    <div class="layui-col-md3" id="invCode">
+
+                                    </div>
+                                    <div class="layui-col-md1">
+                                        产品名称：
+                                    </div>
+                                    <div class="layui-col-md3" id="invName">
+
+                                    </div>
+                                    <div class="layui-col-md1">
+                                        规格型号：
+                                    </div>
+                                    <div class="layui-col-md3" id="invStd">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md8" style="height: 800px">
+                        <div class="layui-card">
+                            <div class="layui-card-header">检验指导书</div>
+                            <div class="layui-card-body">
+                                <input id="pdfPath" type="hidden" name="pdfPath"/>
+                                <div id="example1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <div class="layui-row">
+                                    <div class="layui-col-md3" style=" margin: 0;">
+
+                                    </div>
+                                    <div class="layui-col-md3" style=" margin: 0;">
+                                        <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="firstInspectSubmit" id="firstInspectSubmit" onclick="firstInspectSubmit()">首检确认</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="layui-tab-item">内容2</div>
             </div>
         </div>
     </div>
@@ -48,7 +93,10 @@
     <div th:replace="fragments/footer :: footer"></div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/manufacture/quality.js"></script>
-
+    <script src="/pdfObject/pdfobject.js"></script>
+    <style>
+        .pdfobject-container { height: 30rem; border: 1rem solid rgba(0,0,0,.1); }
+    </style>
 </div>
 </body>
 </html>

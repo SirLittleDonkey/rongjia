@@ -3,7 +3,7 @@
 <mapper namespace="com.wyait.manage.dao.manufacture.WorkMapper">
 
     <select id="getDailyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanDTO">
-        SELECT w.prodPlanId, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, w.qualifiedqty, w.unqualifiedqty, w.hasInspected
+        SELECT pp.id as prodplanid, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, w.qualifiedqty, w.unqualifiedqty, w.hasInspected
         FROM prodplan pp
         INNER JOIN Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
@@ -39,4 +39,6 @@
         WHERE prodPlanId = #{prodPlanId}
         ORDER BY o.version DESC
     </select>
+
+
 </mapper>

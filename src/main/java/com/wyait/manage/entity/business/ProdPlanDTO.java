@@ -10,6 +10,8 @@ public class ProdPlanDTO {
     private String invCode;
     private String invName;
     private String invStd;
+    private String procedureCode;
+    private String procedureName;
     private String planDate;
     private Integer planQty;
     private Double planHour;
@@ -116,5 +118,21 @@ public class ProdPlanDTO {
 
     public void setDel(Boolean isDel) {
         this.isDel = isDel;
+    }
+
+    public String getProcedureCode() {
+        return procedureCode;
+    }
+
+    public void setProcedureCode(String procedureCode) {
+        this.procedureCode = procedureCode;
+    }
+
+    public String getProcedureName() {
+        return procedureName;
+    }
+
+    public void setProcedureName(String procedureName) {
+        this.procedureName = procedureName;
     }
 }

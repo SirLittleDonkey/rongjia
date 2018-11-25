@@ -1,7 +1,7 @@
 package com.wyait.manage.entity.manufacture;
 
 public class WorkPlanQualityDTO {
-    private Integer id;
+    private Integer prodPlanId;
     private String planDate;
     private String invCode;
     private String invName;
@@ -11,12 +11,12 @@ public class WorkPlanQualityDTO {
     private Integer realQty;
     private Boolean hasInspected;
 
-    public Integer getId() {
-        return id;
+    public Integer getProdPlanId() {
+        return prodPlanId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setProdPlanId(Integer prodPlanId) {
+        this.prodPlanId = prodPlanId;
     }
 
     public String getPlanDate() {

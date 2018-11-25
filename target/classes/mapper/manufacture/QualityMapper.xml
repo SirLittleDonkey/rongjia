@@ -6,7 +6,7 @@
 
 
     <select id="getDailyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanQualityDTO">
-        SELECT pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, w.qualifiedqty, w.unqualifiedqty, w.hasInspected
+        SELECT pp.id as prodPlanID, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename, pp.planqty, isnull(w.qualifiedqty,0) + ISNULL(w.unqualifiedqty,0) AS realityQty, w.hasInspected
         FROM prodplan pp
         INNER JOIN Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
@@ -14,5 +14,17 @@
         WHERE pp.workstationcode = #{workStationCode} AND CONVERT(varchar,plandate,23) = CONVERT(varchar,GETDATE(),23)
     </select>
 
+    <select id="getFirstInspectData" resultType="com.wyait.manage.entity.manufacture.FirstInspectVO">
+        SELECT TOP(1) pp.id AS prodPlanId, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, q.filepath, p.procedurename
+        FROM prodplan pp
+        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN proced p ON pp.procedurecode = p.procedurecode
+        LEFT JOIN qualityinstruction q ON pp.invcode = q.invcode AND pp.procedurecode = q.procedurecode
+        WHERE pp.id = #{prodPlanId}
+        ORDER BY q.version DESC
+    </select>
 
+    <insert id="firstInspect">
+        INSERT INTO work (prodPlanId, hasInspected) VALUES (#{prodPlanId}, 1)
+    </insert>
 </mapper>

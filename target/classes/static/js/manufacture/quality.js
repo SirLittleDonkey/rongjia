@@ -11,7 +11,7 @@ $(function(){
 
     layui.use('table', function(){
         var table = layui.table
-
+        var form = layui.form
         tableIns = table.render({
             elem: '#dailyWorkPlanList'
             ,url:'/manufacture/getDailyWorkPlanQuality?workStationCode=' + workStationCode
@@ -28,7 +28,7 @@ $(function(){
             }
             ,cols: [[
                 {type:'numbers'}
-                ,{field:'id', title:'ID',width:80, unresize: true}
+                ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true}
                 ,{field:'planDate', title:'日期'}
                 ,{field:'invCode', title:'产品编号'}
                 ,{field:'invName', title: '产品名称'}
@@ -51,9 +51,9 @@ $(function(){
         })
         table.on('tool(dailyWorkPlanTable)',function(obj){
             var data = obj.data
-            if(obj.event === 'start'){
+            if(obj.event === 'firstInspect'){
                 //开工
-
+                startFirstInspect(data, data.prodPlanId)
             }
         })
     })
@@ -69,6 +69,49 @@ function load(obj){
             curr: pageCurr //从当前页码开始
         }
     });
+}
+
+function startFirstInspect(obj, prodPlanId){
+    //回显数据
+    $.get("/manufacture/getFirstInspectData", {"prodPlanId": prodPlanId}, function(data){
+        if(isLogin(data)){
+            if(data.msg == "ok" && data.firstInspectVO != null){
+                $('#prodPlanId').val(data.firstInspectVO.prodPlanId == null ? '': data.firstInspectVO.prodPlanId)
+                $('#invCode').html(data.firstInspectVO.invCode == null ? '': data.firstInspectVO.invCode)
+                $('#invName').html(data.firstInspectVO.invName == null ? '': data.firstInspectVO.invName)
+                $('#invStd').html(data.firstInspectVO.invStd == null ? '': data.firstInspectVO.invStd)
+                PDFObject.embed("/business/getPDF?filePath=" + data.firstInspectVO.filePath, "#example1")
+                layui.use('element', function() {
+                    var $ = layui.jquery
+                        , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+                    element.tabChange('demo', 'startWork'); //切换到：用户管理
+                })
+            }else{
+                //弹出错误提示
+                layer.alert(data.msg,function () {
+                    layer.closeAll();
+                });
+            }
+        }
+    })
+
+}
+
+function firstInspectSubmit(){
+
+    $.post("/manufacture/firstInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+        if(isLogin(data)){
+            if(data.msg == "ok" ){
+                layer.alert('首检成功');
+                $(window).attr('location','/manufacture/quality')
+            }else{
+                //弹出错误提示
+                layer.alert(data.msg,function () {
+                    layer.closeAll();
+                });
+            }
+        }
+    })
 }
 
 

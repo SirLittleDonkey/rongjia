@@ -5,6 +5,7 @@ public class ProdPlanSearchDTO {
     private String uworkshopcode;
     private String uworkstationcode;
     private String uinvcode;
+    private String uprocedurecode;
     private String planDateStart;
     private String planDateEnd;
 
@@ -54,5 +55,13 @@ public class ProdPlanSearchDTO {
 
     public void setPlanDateEnd(String planDateEnd) {
         this.planDateEnd = planDateEnd;
+    }
+
+    public String getUprocedurecode() {
+        return uprocedurecode;
+    }
+
+    public void setUprocedurecode(String uprocedurecode) {
+        this.uprocedurecode = uprocedurecode;
     }
 }

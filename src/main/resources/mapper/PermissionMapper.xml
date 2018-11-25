@@ -28,11 +28,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.wyait.manage.pojo.Permission" >
-    insert into permission (id, name, pid, 
+    insert into permission ( name, pid,
       zindex, istype, descpt, 
       code, icon, page, insert_time, 
       update_time)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, 
+    values ( #{name,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER},
       #{zindex,jdbcType=INTEGER}, #{istype,jdbcType=INTEGER}, #{descpt,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{page,jdbcType=VARCHAR}, #{insertTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
@@ -40,9 +40,6 @@
   <insert id="insertSelective" parameterType="com.wyait.manage.pojo.Permission" >
     insert into permission
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="name != null" >
         name,
       </if>

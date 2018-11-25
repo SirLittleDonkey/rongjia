@@ -33,6 +33,7 @@ $(function(){
                 ,{field:'invCode', title: '产品编号'}
                 ,{field:'invName', title: '产品名称'}
                 ,{field:'invStd', title: '规格型号'}
+                ,{field:'procedureCode', title: '工序号'}
                 ,{field:'planDate', title: '计划日期'}
                 ,{field:'planQty', title: '计划数'}
                 ,{field:'planHour', title:'计划加工小时数'}
@@ -133,6 +134,7 @@ function cleanProdPlan(){
     $("#workshopCode").val("")
     $("#workstationCode").val("")
     $("#invCode").val("")
+    $("#procedureCode").val("")
     $("#planDate").val("")
     $("#planQty").val("")
     $("#planHour").val("")
@@ -185,6 +187,7 @@ function getProdPlan(obj, id){
                     $("#workshopCode").val(data.prodPlanVO.workshopCode == null ? '': data.prodPlanVO.workshopCode)
                     $("#workstationCode").val(data.prodPlanVO.workstationCode == null ? '': data.prodPlanVO.workstationCode)
                     $("#invCode").val(data.prodPlanVO.invCode == null ? '': data.prodPlanVO.invCode)
+                    $("#procedureCode").val(data.prodPlanVO.procedureCode == null ? '': data.prodPlanVO.procedureCode)
                     $("#planDate").val(data.prodPlanVO.planDate == null ? '': data.prodPlanVO.planDate)
                     $("#planQty").val(data.prodPlanVO.planQty == null ? '': data.prodPlanVO.planQty)
                     $("#planHour").val(data.prodPlanVO.planHour == null ? '': data.prodPlanVO.planHour)
