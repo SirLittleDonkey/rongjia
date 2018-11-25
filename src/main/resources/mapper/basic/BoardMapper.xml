@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.basic.BoardMapper">
+    <resultMap id="BaseResultMap" type="com.wyait.manage.pojo.basic.Board">
+        <id column="id" jdbcType="INTEGER" property="id"   />
+        <result column="factoryCode" jdbcType="VARCHAR" property="factoryCode"></result>
+        <result column="factoryName" jdbcType="VARCHAR" property="factoryName"></result>
+        <result column="workShopCode" jdbcType="VARCHAR" property="workShopCode"></result>
+        <result column="workShopName" jdbcType="VARCHAR" property="workShopName"></result>
+        <result column="boardCode" jdbcType="VARCHAR" property="boardCode"></result>
+        <result column="ipAddress" jdbcType="VARCHAR" property="ipAddress"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+
+    <!--=Start getUsers 分页查询看板列表userSearch -->
+    <select id="getBoards" resultType="com.wyait.manage.entity.basic.BoardDTO">
+        SELECT b.id, b.factoryCode, f.factoryName, b.workShopCode, wsh.workShopName, b.boardCode, b.ipAddress, b.is_del
+        FROM board b
+        INNER JOIN rj_factory f ON b.factorycode = f.factorycode AND f.is_del = 0
+        INNER JOIN workshop wsh ON b.workshopcode = wsh.workshopcode AND wsh.is_del = 0
+        <where>
+            <if test="boardSearchDTO.ufoctory != null and boardSearchDTO.ufoctory != ''">
+                AND factorycode = #{boardSearchDTO.ufoctory}
+            </if>
+            <if test="boardSearchDTO.uworkshop != null and boardSearchDTO.uworkshop != ''">
+                AND workshopcode = #{boardSearchDTO.uworkshop}
+            </if>
+            <if test="boardSearchDTO.uboard != null and boardSearchDTO.uboard != ''">
+                AND boardcode = #{boardSearchDTO.uboard}
+            </if>
+        </where>
+    </select>
+    <!--=End getUsers 分页查询工位列表 -->
+
+    <!--=Start setDelUser 删除工位 -->
+    <update id="setDelBoard">
+		update board
+		set
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+    <!--=End setDelUser 删除工位 -->
+
+    <!--=Start getUserAndRoles 查询用户及他对应的角色ids -->
+    <resultMap id="getBoard" type="com.wyait.manage.entity.basic.BoardVO">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="factoryCode" jdbcType="VARCHAR" property="factoryCode"></result>
+        <result column="workShopCode" jdbcType="VARCHAR" property="workShopCode"></result>
+        <result column="boardCode" jdbcType="VARCHAR" property="boardCode"></result>
+        <result column="ipAddress" jdbcType="VARCHAR" property="ipAddress"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+    <select id="getBoard" resultMap="getBoard">
+		SELECT id, factoryCode, workShopCode, boardCode, ipAddress, is_del
+        FROM board
+        WHERE id = #{id} AND is_del = 0
+	</select>
+    <!--=End getUserAndRoles 查询用户及他对应的角色ids -->
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.wyait.manage.pojo.basic.Board">
+        update board
+        <set>
+            <if test="factoryCode != null">
+                factoryCode = #{factoryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="workShopCode != null">
+                workShopCode = #{workShopCode,jdbcType=VARCHAR},
+            </if>
+            <if test="boardCode != null">
+                boardCode = #{boardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="ipAddress != null">
+                ipAddress = #{ipAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="insertUid != null">
+                insert_uid = #{insertUid,jdbcType=INTEGER},
+            </if>
+            update_time = getdate(),
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.pojo.basic.Board">
+		insert into board ( factoryCode,
+		workShopCode,
+		boardCode,
+		ipAddress,insert_uid,insert_time,is_del
+		)
+		values ( #{factoryCode,jdbcType=VARCHAR},
+		#{workShopCode,jdbcType=VARCHAR},
+		 #{boardCode,jdbcType=VARCHAR},
+		#{ipAddress,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+
+    <!--=Start findBoardByBoardCode 根据看板号获取工位数据 -->
+    <select id="findBoardByBoardCode" resultType="com.wyait.manage.pojo.basic.Board">
+		select
+		id, factoryCode,
+		workShopCode, boardCode, ipAddress, is_del
+		from board
+		WHERE
+		boardCode=#{boardCode} and is_del=0
+	</select>
+    <!--=End findUserByMobile 根据手机号查找用户 -->
+
+</mapper>

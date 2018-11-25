@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.business.QualityInstructionMapper">
+
+    <!--=Start getUsers 分页查询工位列表userSearch -->
+    <select id="getQIs" resultType="com.wyait.manage.entity.business.qiDTO">
+        SELECT qi.id, qi.invCode, cinvName as invName, cinvStd as invStd, qi.procedureCode, procedureName, version, filepath , case when filepath is null then 0  when filepath  = '' then 0  else 1 end as hasupload, qi.is_del
+        FROM qualityinstruction qi
+        INNER JOIN Inventory inv on qi.invcode = inv.cinvcode
+        INNER JOIN proced pr on qi.procedurecode = pr.procedurecode
+        <where>
+            <if test="qiSearchDTO.uinvcode != null and qiSearchDTO.uinvcode != ''">
+                AND qi.invCode = #{qiSearchDTO.uinvcode}
+            </if>
+            <if test="qiSearchDTO.uprocedurecode != null and qiSearchDTO.uprocedurecode != ''">
+                AND qi.procedureCode = #{qiSearchDTO.uprocedurecode}
+            </if>
+        </where>
+    </select>
+
+    <select id="findQualityInstructionByInvCodeAndProcedureCode" resultType="com.wyait.manage.pojo.business.QualityInstruction">
+        SELECT qi.id, qi.invcode, qi.procedureCode, qi.version, qi.filepath
+        FROM qualityinstruction qi
+        INNER JOIN(
+          SELECT invCode, procedureCode, MAX(version) version
+          FROM qualityinstruction
+          GROUP BY invCode, procedureCode) ma
+        ON qi.invcode = ma.invcode AND qi.procedureCode = ma.procedurecode AND qi.version = ma.version
+        WHERE qi.invCode = #{invCode} AND qi.procedureCode = #{procedureCode} AND is_del = 0
+    </select>
+
+    <insert id="insertTotallyNew" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.qiSetDTO">
+        insert into qualityinstruction ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		1,
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.qiSetDTO">
+        insert into qualityinstruction ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		#{version,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <select id="getQualityInstruction" resultType="com.wyait.manage.pojo.business.QualityInstruction">
+        SELECT id, invCode, procedureCode, version, filePath
+        FROM qualityinstruction
+        WHERE id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="findQualityInstructionByIPV" resultType="com.wyait.manage.pojo.business.QualityInstruction">
+        SELECT qi.id, qi.invcode, qi.procedureCode, qi.version, qi.filepath
+        FROM qualityinstruction qi
+        WHERE qi.invCode = #{invCode} AND qi.procedureCode = #{procedureCode} AND qi.version = #{version} AND is_del = 0
+    </select>
+
+    <update id="update">
+        update qualityinstruction
+		set
+		invCode = #{invCode,jdbcType=NVARCHAR},
+		procedureCode = #{procedureCode,jdbcType=NVARCHAR},
+		version = #{version,jdbcType=INTEGER},
+		filePath = #{filePath,jdbcType=NVARCHAR},
+		insert_uid = #{insertUid,jdbcType=INTEGER},
+		update_time = getdate(),
+		is_del = #{isDel,jdbcType=BIT}
+		where id =
+		#{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="setDelQualityInstruction">
+        update  qualityinstruction
+        set is_del = #{isDel,jdbcType=INTEGER}
+        where id =
+		#{id,jdbcType=INTEGER}
+    </update>
+</mapper>
