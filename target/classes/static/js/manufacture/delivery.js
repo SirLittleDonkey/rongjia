@@ -38,10 +38,15 @@ $(function(){
                     ,{field:'state', title:'状态'}
                 ]],
                 done: function(res, curr, count){
-                    pageCurr = curr + 1
+                    if(curr == Math.ceil(count/10)){
+                        pageCurr = 1
+                    }else{
+                        pageCurr = curr + 1
+                    }
+
                 }
 
             })
         })
-    },30000)
+    },5000)
 })

@@ -66,7 +66,7 @@ $(function(){
 
         tableIns = table.render({
             elem: '#weeklyWorkPlanList'
-            ,url:'/manufacture/getWeeklyWorkPlan'
+            ,url:'/manufacture/getWeeklyWorkPlan?workStationCode=' + workStationCode
             ,method: 'post' //默认：get请求
             ,cellMinWidth: 80
             ,page: true,
@@ -82,12 +82,12 @@ $(function(){
             ,cols: [[
                 {type:'numbers'}
                 ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true}
-                ,{field:'date', title:'日期'}
+                ,{field:'plandate', title:'日期'}
                 ,{field:'invCode', title:'产品编号'}
                 ,{field:'invName', title: '产品名称'}
                 ,{field:'invStd', title: '规格型号'}
                 ,{field:'procedureName', title: '工序'}
-                ,{field:'planTime', title:'计划加工小时'}
+                ,{field:'planHour', title:'计划加工小时'}
                 ,{field:'planQty', title:'计划数量'}
                 ,{field:'qualifiedQty', title:'合格数量'}
                 ,{field:'unqualifiedQty', title:'不合格数量'}
@@ -131,6 +131,7 @@ function startWork(obj, prodPlanId){
                 $('#invCode').html(data.workVO.invCode == null ? '': data.workVO.invCode)
                 $('#procedureName').html(data.workVO.procedureName == null ? '': data.workVO.procedureName)
                 $('#realQty').html(data.workVO.realQty == null ? '': data.workVO.realQty)
+                $('#state').html(data.workVO.state == null ? '': data.workVO.state)
                 $('#userName').val(data.workVO.pdfPath == null ? '': data.workVO.pdfPath)
                 PDFObject.embed("/business/getPDF?filePath=" + data.workVO.pdfPath, "#example1")
                 layui.use('element', function() {
@@ -150,10 +151,46 @@ function startWork(obj, prodPlanId){
 }
 
 function qualitySubmit(){
-
+    layer.alert('确定合格吗？', {
+        closeBtn: 1,
+        btn: ['确定', '取消'],
+        yes: function () {
+            $.post("/manufacture/setquality", {"prodPlanId": $("#prodPlanId").val()}, function (data) {
+                if (isLogin(data)) {
+                    if (data.msg == "ok") {
+                        layer.alert('发送成功！')
+                        $('#realQty').html(data.workVO.realQty == null ? '': data.workVO.realQty)
+                    } else {
+                        //弹出错误提示
+                        layer.alert(data.msg, function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
 }
 
 function unqualitySubmit(){
-
+    layer.alert('确定不合格吗？', {
+        closeBtn: 1,
+        btn: ['确定', '取消'],
+        yes: function () {
+            $.post("/manufacture/setunquality", {"prodPlanId": $("#prodPlanId").val()}, function (data) {
+                if (isLogin(data)) {
+                    if (data.msg == "ok") {
+                        layer.alert('发送成功！')
+                        $('#realQty').html(data.workVO.realQty == null ? '': data.workVO.realQty)
+                    } else {
+                        //弹出错误提示
+                        layer.alert(data.msg, function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
 }
 

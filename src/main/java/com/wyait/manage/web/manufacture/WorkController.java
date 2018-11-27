@@ -57,11 +57,38 @@ public class WorkController {
         return pdr;
     }
 
+    @RequestMapping(value = "/getWeeklyWorkPlan", method = RequestMethod.POST)
+    @ResponseBody
+    @RequiresPermissions(value = "work")
+    public PageDataResult getWeeklyWorkPlan(@RequestParam("page") Integer page,
+                                           @RequestParam("limit") Integer limit,
+                                           @RequestParam("workStationCode") String workStationCode){
+        logger.debug("分页查询工位列表！搜索条件：workStationCode：" + workStationCode + ",page:" + page
+                + ",每页记录数量limit:" + limit);
+        PageDataResult pdr = new PageDataResult();
+        try{
+            if (null == page) {
+                page = 1;
+            }
+            if (null == limit) {
+                limit = 10;
+            }
+            //获取工位列表
+            pdr = workService.getWeeklyWorkPlan(page, limit, workStationCode);
+            logger.debug("工位列表查询=pdr:" + pdr);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("工位列表查询异常！", e);
+        }
+        return pdr;
+    }
+
     @RequestMapping("/getWorkStationCode")
     @ResponseBody
     public String getWorkStationCode(HttpServletRequest request){
 
         return workService.getWorkStationCode(request);
+
     }
 
     @RequestMapping("/startWork")
@@ -76,6 +103,67 @@ public class WorkController {
                 return map;
             }
             WorkVO workVO = workService.startWork(prodPlanId);
+            if (null != workVO) {
+                map.put("workVO", workVO);
+                // 获取全部角色数据
+                map.put("msg", "ok");
+            } else {
+                map.put("msg", "开工错误，请您稍后再试");
+            }
+            logger.debug("开工成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "开工错误，请您稍后再试");
+            logger.error("查询生产计划数据异常！", e);
+        }
+        return map;
+
+    }
+
+
+    @RequestMapping("/setquality")
+    @ResponseBody
+    public Map<String, Object> quality(Integer prodPlanId){
+        logger.debug("开始生产！prodPlanId:" + prodPlanId);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("开始生产==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            WorkVO workVO = workService.quality(prodPlanId);
+            if (null != workVO) {
+                map.put("workVO", workVO);
+                // 获取全部角色数据
+                map.put("msg", "ok");
+            } else {
+                map.put("msg", "开工错误，请您稍后再试");
+            }
+            logger.debug("开工成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "开工错误，请您稍后再试");
+            logger.error("查询生产计划数据异常！", e);
+        }
+        return map;
+
+    }
+
+    @RequestMapping("/setunquality")
+    @ResponseBody
+    public Map<String, Object> unquality(Integer prodPlanId){
+        logger.debug("开始生产！prodPlanId:" + prodPlanId);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("开始生产==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            WorkVO workVO = workService.unquality(prodPlanId);
             if (null != workVO) {
                 map.put("workVO", workVO);
                 // 获取全部角色数据

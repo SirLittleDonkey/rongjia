@@ -6,7 +6,8 @@ var pageCurr
 $(function(){
     layui.use('table', function(){
         var table = layui.table
-        table.render({
+        var form = layui.form
+        tableIns = table.render({
             elem: '#planProcessList',
             url: 'getPlanProcessList',
             method: 'post',
@@ -35,7 +36,11 @@ $(function(){
                 ,{field:'state', title:'状态'}
             ]],
             done: function(res, curr, count){
-                pageCurr = curr
+                if(curr == Math.ceil(count/10)){
+                    pageCurr = 1
+                }else{
+                    pageCurr = curr + 1
+                }
             }
         })
     })
@@ -54,11 +59,15 @@ $(function(){
 })
 
 function load(obj){
+    $("#planProcessSearch").css("display","none")
     //重新加载table
-    tableIns.reload({
-        where: obj.field
-        , page: {
-            curr: pageCurr //从当前页码开始
-        }
-    });
+    setInterval(function(){
+        tableIns.reload({
+            where: obj.field
+            , page: {
+                curr: pageCurr //从当前页码开始
+            }
+        });
+    },5000)
+
 }

@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,5 +116,11 @@ public class ProdPlanController {
             logger.error("查询生产计划数据异常！", e);
         }
         return map;
+    }
+
+    @RequestMapping(value = "/uploadProdPlan", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> uploadProdPlan(@RequestParam MultipartFile file) throws IOException {
+        return prodPlanService.uploadProdPlan(file);
     }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wyait.manage.dao.manufacture.PlanProcessMapper">
     <select id="getPlanProcessList" resultType="com.wyait.manage.entity.manufacture.PlanProcessDTO" parameterType="com.wyait.manage.entity.manufacture.PlanProcessSearchDTO">
-        SELECT p.cuscode, c.cCusName AS cusName, p.workshopcode, ws.workshopname, p.workstationcode, p.invcode, i.cInvName AS invName, p.planqty
+        SELECT p.cuscode, c.cCusName AS cusName, p.workshopcode, ws.workshopname, p.workstationcode, p.invcode, i.cInvName AS invName, p.planqty, p.plandate, p.planhour, isnull(w.qualifiedqty,0) as qualifiedqty, isnull(w.unqualifiedqty,0) as unqualifiedqty
         FROM prodplan p
         INNER JOIN Customer c ON p.cuscode = c.cCusCode
         INNER JOIN workshop ws ON p.workshopcode = ws.workshopcode
@@ -18,7 +18,7 @@
             <if test="planProcessSearchDTO.uinvcode != null and planProcessSearchDTO.uinvcode != ''">
                 AND p.invCode = #{planProcessSearchDTO.uinvcode}
             </if>
-            AND p.plandate = CONVERT(varchar(10),GETDATE(),120)
+            AND CONVERT(varchar(10),p.plandate,120) = CONVERT(varchar(10),GETDATE(),120)
         </where>
     </select>
 </mapper>

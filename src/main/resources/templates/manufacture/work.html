@@ -5,9 +5,11 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <!--头-->
+    <div id="top" style="display: none">
     <div th:replace="fragments/head :: header"></div>
+    </div>
 
-    <div class="layui-body" style="margin: 1%">
+    <div class="" style="margin: 1%">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 1px;">
             <legend id="workStationCode"></legend>
         </fieldset>
@@ -45,7 +47,6 @@
                 <div class="layui-tab-item">
                     <div class="layui-col-md12">
                         <div class="layui-card">
-                            <div class="layui-card-header">加工信息</div>
                             <div class="layui-card-body">
                                 <div class="layui-row">
                                     <input id="prodPlanId" type="hidden" name="prodPlanId"/>
@@ -53,19 +54,19 @@
                                         姓名：
                                     </div>
                                     <div class="layui-col-md3" id="userName">
-                                        张三
+
                                     </div>
                                     <div class="layui-col-md1">
                                         计划数量：
                                     </div>
                                     <div class="layui-col-md3" id="planQty">
-                                        50
+
                                     </div>
                                     <div class="layui-col-md1">
                                         开工时间：
                                     </div>
                                     <div class="layui-col-md3" id="startTime">
-                                        2018-11-21 08:20:13
+
                                     </div>
                                 </div>
                                 <div class="layui-row">
@@ -73,48 +74,52 @@
                                         产品：
                                     </div>
                                     <div class="layui-col-md3" id="invCode">
-                                        00304001
+
                                     </div>
                                     <div class="layui-col-md1">
                                         工序：
                                     </div>
                                     <div class="layui-col-md3" id="procedureName">
-                                        工序一
+
                                     </div>
                                     <div class="layui-col-md1">
                                         实际生产数量：
                                     </div>
                                     <div class="layui-col-md3" id="realQty">
-                                        1
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="layui-col-md8" style="height: 800px">
-                        <div class="layui-card">
+                    <div class="layui-col-md12" style="height: 800px">
+                        <div class="layui-card layui-col-md9">
                             <div class="layui-card-header">作业指导书</div>
                             <div class="layui-card-body">
                                 <input id="pdfPath" type="hidden" name="pdfPath"/>
                                 <div id="example1"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-col-md12">
-                        <div class="layui-card">
+                        <div class="layui-card layui-col-md3">
                             <div class="layui-card-body">
                                 <div class="layui-row">
                                     <div class="layui-col-md3" style=" margin: 0;">
                                         <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="qualitySubmit" id="qualitySubmit" onclick="qualitySubmit()">合格</button>
                                     </div>
+                                </div>
+                                <div class="layui-row">
                                     <div class="layui-col-md3" style=" margin: 0;">
-                                        <button class="layui-btn layui-btn-fluid layui-btn-danger" lay-submit="" lay-filter="unqualitySubmit" id="unqualitySubmit" onclick="unqualitySubmit()">合格</button>
+                                        <button class="layui-btn layui-btn-fluid layui-btn-danger" lay-submit="" lay-filter="unqualitySubmit" id="unqualitySubmit" onclick="unqualitySubmit()">不合格</button>
                                     </div>
+                                </div>
+                                <div class="layui-row">
                                     <div class="layui-col-md3">
                                         状态
                                     </div>
-                                    <div class="layui-col-md3">
-                                        欠产3个
+                                </div>
+                                <div class="layui-row">
+                                    <div class="layui-col-md3" id="state">
+
                                     </div>
                                 </div>
                             </div>
@@ -125,12 +130,14 @@
         </div>
     </div>
     <!--底部-->
-    <div th:replace="fragments/footer :: footer"></div>
+    <div style="display: none">
+        <div th:replace="fragments/footer :: footer" id="foot" th:style="'display: none'"></div>
+    </div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/manufacture/work.js"></script>
     <script src="/pdfObject/pdfobject.js"></script>
     <style>
-        .pdfobject-container { height: 30rem; border: 1rem solid rgba(0,0,0,.1); }
+        .pdfobject-container { height: 40rem; border: 1rem solid rgba(0,0,0,.1); }
     </style>
 </div>
 </body>

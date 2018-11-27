@@ -5,6 +5,8 @@ import java.util.Date;
 public class WorkVO {
     private Integer prodPlanId;
     private String userName;
+    private String planDate;
+    private Double planHour;
     private Integer planQty;
     private Date startTime;
     private String invCode;
@@ -15,6 +17,8 @@ public class WorkVO {
     private Integer realQty;
     private String pdfPath;
     private String state;
+    private Integer qualifiedqty;
+    private Integer unqualifiedqty;
 
     public Integer getProdPlanId() {
         return prodPlanId;
@@ -110,5 +114,37 @@ public class WorkVO {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getPlanDate() {
+        return planDate;
+    }
+
+    public void setPlanDate(String planDate) {
+        this.planDate = planDate;
+    }
+
+    public Double getPlanHour() {
+        return planHour;
+    }
+
+    public void setPlanHour(Double planHour) {
+        this.planHour = planHour;
+    }
+
+    public Integer getQualifiedqty() {
+        return qualifiedqty;
+    }
+
+    public void setQualifiedqty(Integer qualifiedqty) {
+        this.qualifiedqty = qualifiedqty;
+    }
+
+    public Integer getUnqualifiedqty() {
+        return unqualifiedqty;
+    }
+
+    public void setUnqualifiedqty(Integer unqualifiedqty) {
+        this.unqualifiedqty = unqualifiedqty;
     }
 }

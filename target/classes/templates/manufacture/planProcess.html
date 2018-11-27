@@ -5,10 +5,12 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <!--头-->
-    <div th:replace="fragments/head :: header"></div>
+    <div id="top" style="display: none">
+        <div th:replace="fragments/head :: header"></div>
+    </div>
 
-    <div class="layui-body">
-        <form id="workStationSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+    <div class="">
+        <form id="planProcessSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <div class="layui-form-item">
                 <label class="layui-form-label">客户</label>
                 <div class="layui-input-inline">
@@ -44,7 +46,9 @@
     </div>
 
     <!--底部-->
-    <div th:replace="fragments/footer :: footer"></div>
+    <div style="display: none">
+        <div th:replace="fragments/footer :: footer" id="foot" th:style="'display: none'"></div>
+    </div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/manufacture/planProcess.js"></script>
 </div>

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import static java.lang.Math.round;
 
 public class DateUtil implements AutoCloseable,Serializable {
     private static final long serialVersionUID = 5110771010886130754L;
@@ -57,6 +60,23 @@ public class DateUtil implements AutoCloseable,Serializable {
 
     @Override
     public void close() throws Exception {
+    }
+
+    public static String getCurrentState(String planTime, Double planHour, Integer planQty, Integer qualiefidQty, Integer unQualiefidQty) throws ParseException {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(planTime));
+            Double planMin = planHour * 60;
+            Double reqQtyPerMin = planQty / planMin;
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(new Date());
+            long mills = calendar1.getTimeInMillis() - calendar.getTimeInMillis();
+            long passMin = mills / 60000;
+            Double miQty = passMin * reqQtyPerMin - qualiefidQty - unQualiefidQty;
+            if(miQty > 0){
+                return "欠产" + round(miQty) + "个";
+            }else{
+                return "超产" + round(-miQty) + "个";
+            }
     }
 }
 

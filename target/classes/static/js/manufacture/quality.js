@@ -4,6 +4,7 @@
 var pageCurr;
 var workStationCode;
 $(function(){
+
     $.post("/manufacture/getWorkStationCode", function(data){
         workStationCode = data
         $("#workStationCode").html("工位编号：" + workStationCode)
@@ -52,8 +53,12 @@ $(function(){
         table.on('tool(dailyWorkPlanTable)',function(obj){
             var data = obj.data
             if(obj.event === 'firstInspect'){
-                //开工
+                //首检
                 startFirstInspect(data, data.prodPlanId)
+            }
+            if(obj.event === 'endInspect'){
+                //终检
+                startEndInspect(data, data.prodPlanId)
             }
         })
     })
@@ -98,12 +103,49 @@ function startFirstInspect(obj, prodPlanId){
 }
 
 function firstInspectSubmit(){
+    layer.alert('确定首检吗？',{
+        closeBtn: 1,
+        btn: ['确定','取消'],
+        yes: function() {
+            $.post("/manufacture/firstInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+                if(isLogin(data)){
+                    if(data.msg == "ok" ){
+                        layer.alert('首检成功');
+                        setTimeout(function(){
+                            $(window).attr('location','/manufacture/quality')
+                        }, 3000)
 
-    $.post("/manufacture/firstInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+                    }else{
+                        //弹出错误提示
+                        layer.alert(data.msg,function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
+
+}
+
+function startEndInspect(obj, prodPlanId){
+    if(!obj.hasInspected){
+        layer.alert("请先首检后再终检")
+    }else{
+    //回显数据
+    $.get("/manufacture/getEndInspectData", {"prodPlanId": prodPlanId}, function(data){
         if(isLogin(data)){
-            if(data.msg == "ok" ){
-                layer.alert('首检成功');
-                $(window).attr('location','/manufacture/quality')
+            if(data.msg == "ok" && data.endInspectVO != null){
+                $('#prodPlanId').val(data.endInspectVO.prodPlanId == null ? '': data.endInspectVO.prodPlanId)
+                $('#einvCode').html(data.endInspectVO.invCode == null ? '': data.endInspectVO.invCode)
+                $('#einvName').html(data.endInspectVO.invName == null ? '': data.endInspectVO.invName)
+                $('#einvStd').html(data.endInspectVO.invStd == null ? '': data.endInspectVO.invStd)
+                PDFObject.embed("/business/getPDF?filePath=" + data.endInspectVO.filePath, "#eexample1")
+                layui.use('element', function() {
+                    var $ = layui.jquery
+                        , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+                    element.tabChange('demo', 'endCheck'); //切换到：用户管理
+                })
             }else{
                 //弹出错误提示
                 layer.alert(data.msg,function () {
@@ -112,6 +154,38 @@ function firstInspectSubmit(){
             }
         }
     })
+    }
+
 }
+
+function endInspectSubmit(){
+    layer.alert('确定终检吗？',{
+        closeBtn: 1,
+        btn: ['确定','取消'],
+        yes: function() {
+            $.post("/manufacture/endInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+                if(isLogin(data)){
+                    if(data.msg == "ok" ){
+                        layer.alert('终检成功')
+                        setTimeout(function(){
+                            $(window).attr('location','/manufacture/quality')
+                        }, 3000);
+
+                    }else{
+                        //弹出错误提示
+                        layer.alert(data.msg,function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
+
+}
+
+
+
+
 
 

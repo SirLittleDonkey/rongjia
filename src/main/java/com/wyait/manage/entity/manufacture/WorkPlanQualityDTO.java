@@ -10,6 +10,7 @@ public class WorkPlanQualityDTO {
     private Integer planQty;
     private Integer realQty;
     private Boolean hasInspected;
+    private Boolean hasEndInspected;
 
     public Integer getProdPlanId() {
         return prodPlanId;
@@ -81,5 +82,13 @@ public class WorkPlanQualityDTO {
 
     public void setHasInspected(Boolean hasInspected) {
         this.hasInspected = hasInspected;
+    }
+
+    public Boolean getHasEndInspected() {
+        return hasEndInspected;
+    }
+
+    public void setHasEndInspected(Boolean hasEndInspected) {
+        this.hasEndInspected = hasEndInspected;
     }
 }

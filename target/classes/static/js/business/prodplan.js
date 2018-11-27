@@ -6,6 +6,7 @@ $(function(){
     layui.use('table', function(){
         var table = layui.table
         var form = layui.form
+        var upload = layui.upload;
 
         tableIns = table.render({
             elem: '#prodPlanList'
@@ -84,7 +85,8 @@ $(function(){
             elem: '#planDateEnd'
         });
         laydate.render({
-            elem: '#planDate'
+            elem: '#planDate',
+            type: 'datetime'
         });
         form.on('submit(searchSubmit)', function(data){
             //重新加载table
@@ -93,7 +95,24 @@ $(function(){
         });
     });
 
+    layui.use('upload', function() {
+        upload = layui.upload;
 
+        //普通图片上传
+        var uploadInst = upload.render({ //允许上传的文件后缀
+            elem: '#uploadProdPlan'
+            , url: '/business/uploadProdPlan'
+            , accept: 'file' //普通文件
+            , exts: 'xlsx|xls' //只允许上传压缩文件
+            , done: function (data) {
+                if(data.msg == "ok"){
+                    layer.alert("上传成功！")
+                }else{
+                    layer.alert(data.msg)
+                }
+            }
+        })
+    })
 })
 
 function load(obj){

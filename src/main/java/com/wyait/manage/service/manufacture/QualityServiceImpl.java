@@ -3,6 +3,7 @@ package com.wyait.manage.service.manufacture;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wyait.manage.dao.manufacture.QualityMapper;
+import com.wyait.manage.entity.manufacture.EndInspectVO;
 import com.wyait.manage.entity.manufacture.FirstInspectVO;
 import com.wyait.manage.entity.manufacture.WorkPlanQualityDTO;
 import com.wyait.manage.utils.PageDataResult;
@@ -35,7 +36,18 @@ public class QualityServiceImpl implements QualityService{
     }
 
     @Override
+    public EndInspectVO getEndInspectData(Integer prodPlanId) {
+        EndInspectVO endInspectVO = qualityMapper.getEndInspectData(prodPlanId);
+        return endInspectVO;
+    }
+
+    @Override
     public void firstInspect(Integer prodPlanId) {
         this.qualityMapper.firstInspect(prodPlanId);
+    }
+
+    @Override
+    public void endInspect(Integer prodPlanId) {
+        this.qualityMapper.endInspect(prodPlanId);
     }
 }

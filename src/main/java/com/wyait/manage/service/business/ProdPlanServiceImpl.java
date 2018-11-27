@@ -8,12 +8,21 @@ import com.wyait.manage.entity.business.ProdPlanSearchDTO;
 import com.wyait.manage.entity.business.ProdPlanVO;
 import com.wyait.manage.entity.business.ppSetDTO;
 import com.wyait.manage.pojo.User;
+import com.wyait.manage.utils.ExcelUtil;
 import com.wyait.manage.utils.PageDataResult;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class ProdPlanServiceImpl implements ProdPlanService{
@@ -56,4 +65,32 @@ public class ProdPlanServiceImpl implements ProdPlanService{
     public ProdPlanVO getProdPlan(Integer id) {
         return this.prodPlanMapper.getProdPlan(id);
     }
+
+    @Override
+    public Map<String, Object> uploadProdPlan(MultipartFile file) throws IOException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String fielName = UUID.randomUUID().toString();
+        String name = file.getOriginalFilename();
+        String suffix  = name.substring(name.lastIndexOf(".")+1);
+        String filePath = "E:/rongjia/" + fielName + "." + suffix;
+        File uploadFile = new File(filePath);
+        file.transferTo(uploadFile);
+        FileInputStream in = new FileInputStream(uploadFile);
+
+        Workbook wb = ExcelUtil.getWorkbok(in, uploadFile);
+        Sheet sheet = wb.getSheetAt(0);
+        Row head = sheet.getRow(0);
+        String headStr = "";
+        for(Cell cell: head){
+            headStr = headStr + cell.toString();
+        }
+        if(!headStr.equals("客户编码车间号工位号产品编码工序号计划时间计划数加工小时数")){
+            map.put("msg","上传的文件有误！请重新上传！");
+            return map;
+        }else {
+            map.put("msg", "ok");
+            return map;
+        }
+    }
+
 }

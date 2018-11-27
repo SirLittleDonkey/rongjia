@@ -1,5 +1,6 @@
 package com.wyait.manage.web.manufacture;
 
+import com.wyait.manage.entity.manufacture.EndInspectVO;
 import com.wyait.manage.entity.manufacture.FirstInspectVO;
 import com.wyait.manage.service.manufacture.QualityService;
 import com.wyait.manage.utils.PageDataResult;
@@ -95,6 +96,56 @@ public class QualityController {
                 return map;
             }
             qualityService.firstInspect(prodPlanId);
+            map.put("msg", "ok");
+            logger.debug("获取首检数据成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "获取首检数据错误，请您稍后再试");
+            logger.error("获取首检数据异常！", e);
+        }
+        return map;
+    }
+
+    @RequestMapping("/getEndInspectData")
+    @ResponseBody
+    public Map<String, Object> getEndInspectData(Integer prodPlanId){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("获取首检数据==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            EndInspectVO endInspectVO = qualityService.getEndInspectData(prodPlanId);
+            if (null != endInspectVO) {
+                map.put("endInspectVO", endInspectVO);
+                // 获取全部角色数据
+                map.put("msg", "ok");
+            } else {
+                map.put("msg", "获取首检数据错误，请您稍后再试");
+            }
+            logger.debug("获取首检数据成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "获取首检数据错误，请您稍后再试");
+            logger.error("获取首检数据异常！", e);
+        }
+        return map;
+    }
+
+    @RequestMapping("/endInspect")
+    @ResponseBody
+    public Map<String, Object> endInspect(Integer prodPlanId){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("获取首检数据==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            qualityService.endInspect(prodPlanId);
             map.put("msg", "ok");
             logger.debug("获取首检数据成功！map=" + map);
             return map;

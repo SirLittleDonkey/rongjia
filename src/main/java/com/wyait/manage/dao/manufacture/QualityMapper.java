@@ -1,5 +1,6 @@
 package com.wyait.manage.dao.manufacture;
 
+import com.wyait.manage.entity.manufacture.EndInspectVO;
 import com.wyait.manage.entity.manufacture.FirstInspectVO;
 import com.wyait.manage.entity.manufacture.WorkPlanDTO;
 import com.wyait.manage.entity.manufacture.WorkPlanQualityDTO;
@@ -14,5 +15,9 @@ public interface QualityMapper {
 
     FirstInspectVO getFirstInspectData(@Param("prodPlanId")Integer prodPlanId);
 
+    EndInspectVO getEndInspectData(@Param("prodPlanId")Integer prodPlanId);
+
     int firstInspect(@Param("prodPlanId")Integer prodPlanId);
+
+    int endInspect(@Param("prodPlanId")Integer prodPlanId);
 }

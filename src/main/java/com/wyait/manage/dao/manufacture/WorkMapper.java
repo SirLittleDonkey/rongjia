@@ -14,9 +14,15 @@ public interface WorkMapper {
 
     List<WorkPlanDTO> getDailyWorkPlan(@Param("workStationCode")String workStationCode);
 
+    List<WorkPlanDTO> getWeeklyWorkPlan(@Param("workStationCode")String workStationCode);
+
     Date getStartTime(@Param("prodPlanId")Integer prodPlanId);
 
     int setStartTime(@Param("prodPlanId")Integer prodPlanId);
+
+    int quality(@Param("prodPlanId")Integer prodPlanId);
+
+    int unquality(@Param("prodPlanId")Integer prodPlanId);
 
     WorkVO getWorkVO(@Param("prodPlanId")Integer prodPlanId);
 }
