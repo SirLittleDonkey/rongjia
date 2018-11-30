@@ -5,6 +5,7 @@ public class ProdPlanVO {
     private String cusCode;
     private String workshopCode;
     private String workstationCode;
+    private String procedureCode;
     private String invCode;
     private String planDate;
     private Integer planQty;
@@ -72,5 +73,13 @@ public class ProdPlanVO {
 
     public void setPlanHour(Double planHour) {
         this.planHour = planHour;
+    }
+
+    public String getProcedureCode() {
+        return procedureCode;
+    }
+
+    public void setProcedureCode(String procedureCode) {
+        this.procedureCode = procedureCode;
     }
 }

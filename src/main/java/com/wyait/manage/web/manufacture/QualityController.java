@@ -35,9 +35,9 @@ public class QualityController {
     @ResponseBody
     @RequiresPermissions(value = "quality")
     public PageDataResult getDailyWorkPlan(@RequestParam("page") Integer page,
-                                           @RequestParam("limit") Integer limit,
-                                           @RequestParam("workStationCode") String workStationCode){
-        logger.debug("分页查询工位列表！搜索条件：workStationCode：" + workStationCode + ",page:" + page
+                                           @RequestParam("limit") Integer limit
+                                           ){
+        logger.debug("分页查询工位列表！搜索条件："  + "page:" + page
                 + ",每页记录数量limit:" + limit);
         PageDataResult pdr = new PageDataResult();
         try{
@@ -48,7 +48,7 @@ public class QualityController {
                 limit = 10;
             }
             //获取工位列表
-            pdr = qualityService.getDailyWorkPlan(page, limit, workStationCode);
+            pdr = qualityService.getDailyWorkPlan(page, limit);
             logger.debug("工位列表查询=pdr:" + pdr);
         }catch (Exception e){
             e.printStackTrace();
@@ -95,8 +95,8 @@ public class QualityController {
                 map.put("msg", "请求参数有误，请您稍后再试");
                 return map;
             }
-            qualityService.firstInspect(prodPlanId);
-            map.put("msg", "ok");
+
+            map = qualityService.firstInspect(prodPlanId);
             logger.debug("获取首检数据成功！map=" + map);
             return map;
         } catch (Exception e) {
@@ -106,6 +106,30 @@ public class QualityController {
         }
         return map;
     }
+
+
+    @RequestMapping("/firstInspectCancel")
+    @ResponseBody
+    public Map<String, Object> firstInspectCancel(Integer prodPlanId){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("获取首检数据==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            map = qualityService.firstInspectCancel(prodPlanId);
+            logger.debug("获取首检数据成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "获取首检数据错误，请您稍后再试");
+            logger.error("获取首检数据异常！", e);
+        }
+        return map;
+    }
+
+
 
     @RequestMapping("/getEndInspectData")
     @ResponseBody
@@ -137,7 +161,7 @@ public class QualityController {
 
     @RequestMapping("/endInspect")
     @ResponseBody
-    public Map<String, Object> endInspect(Integer prodPlanId){
+    public Map<String, Object> endInspect(Integer prodPlanId, Integer FqualifiedQty, Integer FunqualifiedQty){
         Map<String, Object> map = new HashMap<>();
         try {
             if (null == prodPlanId) {
@@ -145,7 +169,29 @@ public class QualityController {
                 map.put("msg", "请求参数有误，请您稍后再试");
                 return map;
             }
-            qualityService.endInspect(prodPlanId);
+            qualityService.endInspect(prodPlanId, FqualifiedQty, FunqualifiedQty);
+            map.put("msg", "ok");
+            logger.debug("获取首检数据成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "获取首检数据错误，请您稍后再试");
+            logger.error("获取首检数据异常！", e);
+        }
+        return map;
+    }
+
+    @RequestMapping("/endInspectCancel")
+    @ResponseBody
+    public Map<String, Object> endInspectCancel(Integer prodPlanId){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("获取首检数据==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            qualityService.endInspectCancel(prodPlanId);
             map.put("msg", "ok");
             logger.debug("获取首检数据成功！map=" + map);
             return map;

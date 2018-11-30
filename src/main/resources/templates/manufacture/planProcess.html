@@ -2,7 +2,7 @@
 <html  xmlns:th="http://www.thymeleaf.org"
        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:include="layout :: htmlhead" th:with="title='计划与进程看板'" ></head>
-<body class="layui-layout-body">
+<body class="layui-layout-body"  style="background-color: #191970;color:white">
 <div class="layui-layout layui-layout-admin">
     <!--头-->
     <div id="top" style="display: none">
@@ -12,18 +12,18 @@
     <div class="">
         <form id="planProcessSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
             <div class="layui-form-item">
-                <label class="layui-form-label">客户</label>
+                <label class="layui-form-label"  style="background-color: #191970;color:white">客户</label>
                 <div class="layui-input-inline">
-                    <input id="ucuscode" name="ucuscode" autocomplete="off" class="layui-input" type="text"/>
+                    <input id="ucuscode" name="ucuscode" autocomplete="off" class="layui-input" type="text"  style="background-color: #191970;color:white"/>
                 </div>
-                <label class="layui-form-label">车间号</label>
+                <label class="layui-form-label" style="background-color: #191970;color:white">车间号</label>
                 <div class="layui-input-inline">
-                    <input id="uworkshop" name="uworkshop" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                    <input id="uworkshop" name="uworkshop" autocomplete="off" class="layui-input" type="text"  style="background-color: #191970;color:white" onkeyup="this.value=this.value.replace(/\D/g,'')"
                            onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                 </div>
-                <label class="layui-form-label">产品号</label>
+                <label class="layui-form-label"  style="background-color: #191970;color:white" >产品号</label>
                 <div class="layui-input-inline">
-                    <input id="uinvcode" name="uinvcode" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                    <input id="uinvcode" name="uinvcode" autocomplete="off" class="layui-input" type="text"  style="background-color: #191970;color:white" onkeyup="this.value=this.value.replace(/\D/g,'')"
                            onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                 </div>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -32,14 +32,11 @@
         </form>
 
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 3%">
-            <legend style="margin-left: 45%"><span style="font-weight: bold;font-size:30px;">计划与进程看板</span></legend>
+            <legend style="margin-left: 45%"><span style="font-weight: bold;font-size:30px; background-color: #191970;color:white">计划与进程看板</span></legend>
         </fieldset>
         <div class="layui-row">
-            <div class="layui-col-md11">
-                <div class="grid-demo"></div>
-            </div>
-            <div class="layui-col-md1">
-                <div class="grid-demo">当前时间</div>
+            <div class="layui-col-md2 layui-col-md-offset10">
+                <div class="grid-demo"  style="background-color: #191970;color:white" id="nowTime">当前时间</div>
             </div>
         </div>
         <table id="planProcessList" lay-filter="planProcessTable"></table>
@@ -51,6 +48,8 @@
     </div>
     <script src="/js/dateUtils.js"></script>
     <script src="/js/manufacture/planProcess.js"></script>
+	<script src="/js/DataTableExtend.js"></script>
+    <script src="/js/fullscreen.js"></script>
 </div>
 </body>
 </html>

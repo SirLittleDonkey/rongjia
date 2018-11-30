@@ -11,6 +11,7 @@ public class DrawingDTO {
     private String filepath;
     private Boolean hasUpload;
     private Boolean isDel;
+    private String updateTime;
 
     public Integer getId() {
         return id;
@@ -90,5 +91,13 @@ public class DrawingDTO {
 
     public void setDel(Boolean del) {
         isDel = del;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

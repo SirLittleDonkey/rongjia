@@ -1,5 +1,6 @@
 package com.wyait.manage.web.manufacture;
 
+import com.wyait.manage.entity.manufacture.DailyDeliverySearchDTO;
 import com.wyait.manage.service.manufacture.DeliveryService;
 import com.wyait.manage.utils.PageDataResult;
 import com.wyait.manage.web.basic.WorkStationController;
@@ -28,7 +29,7 @@ public class DeliveryController {
     @RequestMapping("/getDailyDeliveryList")
     @ResponseBody
     @RequiresPermissions(value = "delivery")
-    public PageDataResult getDailyDeliveryList(@RequestParam("page")Integer page, @RequestParam("limit")Integer limit){
+    public PageDataResult getDailyDeliveryList(@RequestParam("page")Integer page, @RequestParam("limit")Integer limit, DailyDeliverySearchDTO dailyDeliverySearchDTO ){
         PageDataResult pdr = new PageDataResult();
         try{
             if (null == page) {
@@ -38,7 +39,7 @@ public class DeliveryController {
                 limit = 10;
             }
             //获取工位列表
-            pdr = deliveryService.getDailyDeliveryList(page, limit);
+            pdr = deliveryService.getDailyDeliveryList(page, limit,dailyDeliverySearchDTO);
             logger.debug("每日发货列表查询=pdr:" + pdr);
         }catch (Exception e){
             e.printStackTrace();

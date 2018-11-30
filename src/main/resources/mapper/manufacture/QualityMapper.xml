@@ -6,41 +6,78 @@
 
 
     <select id="getDailyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanQualityDTO">
-        SELECT pp.id as prodPlanID, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename, pp.planqty, isnull(w.qualifiedqty,0) + ISNULL(w.unqualifiedqty,0) AS realQty, w.hasInspected, w.hasEndInspected
+        SELECT pp.id as prodPlanID, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename, pp.planqty, isnull(w.qualifiedqty,0) + ISNULL(w.unqualifiedqty,0) AS realQty, ISNULL(w.hasInspected,0) AS hasInspected, w.hasEndInspected
+        , ISNULL(w.hascomplete,0) AS hascomplete
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
         LEFT JOIN work w ON pp.id = w.prodPlanId
-        WHERE pp.workstationcode = #{workStationCode} AND CONVERT(varchar,plandate,23) = CONVERT(varchar,GETDATE(),23)
+        WHERE CONVERT(varchar,plandate,23) = CONVERT(varchar,GETDATE(),23)
     </select>
 
     <select id="getFirstInspectData" resultType="com.wyait.manage.entity.manufacture.FirstInspectVO">
-        SELECT TOP(1) pp.id AS prodPlanId, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, q.filepath, p.procedurename
+        SELECT TOP(1) pp.id AS prodPlanId, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename, q.filepath AS qualifiedInstructionFilePath, d.filepath AS qualifiedDrawingFilePath
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
         LEFT JOIN qualityinstruction q ON pp.invcode = q.invcode AND pp.procedurecode = q.procedurecode
+        LEFT JOIN drawing d ON pp.invcode = d.invcode AND pp.procedurecode = d.procedurecode
         WHERE pp.id = #{prodPlanId}
-        ORDER BY q.version DESC
+        ORDER BY q.version DESC, d.version DESC
     </select>
 
     <select id="getEndInspectData" resultType="com.wyait.manage.entity.manufacture.EndInspectVO">
-        SELECT TOP(1) pp.id AS prodPlanId, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, q.filepath, p.procedurename
+        SELECT TOP(1) pp.id AS prodPlanId, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename, q.filepath AS qualifiedInstructionFilePath, d.filepath AS qualifiedDrawingFilePath
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
-        LEFT JOIN drawing q ON pp.invcode = q.invcode AND pp.procedurecode = q.procedurecode
+        LEFT JOIN qualityinstruction q ON pp.invcode = q.invcode AND pp.procedurecode = q.procedurecode
+        LEFT JOIN drawing d ON pp.invcode = d.invcode AND pp.procedurecode = d.procedurecode
         WHERE pp.id = #{prodPlanId}
-        ORDER BY q.version DESC
+        ORDER BY q.version DESC, d.version DESC
     </select>
 
     <insert id="firstInspect">
         INSERT INTO work (prodPlanId, hasInspected) VALUES (#{prodPlanId}, 1)
     </insert>
 
+    <update id="firstInspect2">
+        UPDATE work
+        SET hasInspected = 1
+        WHERE prodPlanId = #{prodPlanId}
+    </update>
+
+    <update id="firstInspectCancel">
+        UPDATE work
+        SET hasInspected = 0
+        WHERE prodPlanId = #{prodPlanId}
+    </update>
+
     <update id="endInspect">
         UPDATE work
-        SET hasEndInspected = 1
+        SET hasEndInspected = 1,
+        FqualifiedQty = #{FqualifiedQty},
+        FunqualifiedQty = #{FunqualifiedQty}
+        WHERE prodPlanId = #{prodPlanId}
+    </update>
+
+    <select id="hasInspected" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM work
+        WHERE prodplanid = #{prodPlanId} AND hasInspected = 1
+    </select>
+
+    <select id="hasInspected2" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM work
+        WHERE prodplanid = #{prodPlanId} AND hasInspected = 0
+    </select>
+
+    <update id="endInspectCancel">
+        UPDATE work
+        SET hasEndInspected = 0,
+        FqualifiedQty = 0,
+        FunqualifiedQty = 0
         WHERE prodPlanId = #{prodPlanId}
     </update>
 </mapper>

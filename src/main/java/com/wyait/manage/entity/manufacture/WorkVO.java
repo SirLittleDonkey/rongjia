@@ -8,12 +8,14 @@ public class WorkVO {
     private String planDate;
     private Double planHour;
     private Integer planQty;
-    private Date startTime;
+    private String startTime;
     private String invCode;
     private String invName;
     private String invStd;
     private String procedureCode;
     private String procedureName;
+    private String operationInstruction;
+    private String operationDrawing;
     private Integer realQty;
     private String pdfPath;
     private String state;
@@ -44,11 +46,11 @@ public class WorkVO {
         this.planQty = planQty;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
@@ -146,5 +148,21 @@ public class WorkVO {
 
     public void setUnqualifiedqty(Integer unqualifiedqty) {
         this.unqualifiedqty = unqualifiedqty;
+    }
+
+    public String getOperationInstruction() {
+        return operationInstruction;
+    }
+
+    public void setOperationInstruction(String operationInstruction) {
+        this.operationInstruction = operationInstruction;
+    }
+
+    public String getOperationDrawing() {
+        return operationDrawing;
+    }
+
+    public void setOperationDrawing(String operationDrawing) {
+        this.operationDrawing = operationDrawing;
     }
 }

@@ -5,12 +5,12 @@
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getProdPlans" resultType="com.wyait.manage.entity.business.ProdPlanDTO">
         SELECT pp.id, pp.cuscode, c.ccusname as cusname, pp.workshopcode, ws.workshopname, pp.workstationcode, pp.invcode, i.cinvname as invname, i.cinvstd as invstd,
-        plandate, planqty, planhour, pp.is_del, pp.procedureCode, p.procedureName
+        plandate, planqty, planhour, pp.is_del, pp.procedureCode, p.procedureName, isnull(pp.update_time, pp.insert_time) as updatetime
         FROM prodplan pp
-        LEFT JOIN customer c ON pp.cuscode = c.ccuscode
+        LEFT JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Customer c ON pp.cuscode = c.ccuscode
         LEFT JOIN workshop ws ON pp.workshopcode = ws.workshopcode
         LEFT JOIN workstation wst ON pp.workstationcode = wst.workstationcode
-        LEFT JOIN inventory i ON pp.invcode = i.cinvcode
+        LEFT JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cinvcode
         LEFT JOIN proced p ON pp.procedureCode = p.procedureCode
         <where>
             <if test="prodPlanSearchDTO.ucuscode != null and prodPlanSearchDTO.ucuscode != ''">
@@ -58,7 +58,7 @@
     </insert>
 
     <select id="getProdPlan" resultType="com.wyait.manage.entity.business.ProdPlanVO">
-        SELECT id, cusCode, workshopCode, workstationCode, invCode, planDate, planQty, planHour
+        SELECT id, cusCode, workshopCode, workstationCode, invCode, planDate, planQty, planHour, procedurecode
         FROM prodplan
         WHERE id = #{id, jdbcType=INTEGER}
     </select>
@@ -73,8 +73,39 @@
 		planDate = #{planDate,jdbcType=TIMESTAMP},
 		planQty = #{planQty,jdbcType=INTEGER},
 		planHour = #{planHour,jdbcType=DOUBLE},
+		procedurecode = #{procedureCode,jdbcType=NVARCHAR},
 		insert_uid = #{insertUid,jdbcType=INTEGER},
 		update_time = getdate()
         WHERE id = #{id, jdbcType=INTEGER}
     </update>
+
+    <select id="getExistCus" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Customer
+        WHERE cCusCode = #{cusCode}
+    </select>
+
+    <select id="getExistWorkShop" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM WorkShop
+        WHERE workShopCode = #{workShopCode}
+    </select>
+
+    <select id="getExistWorkStation" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM WorkStation
+        WHERE workStationCode = #{workStationCode}
+    </select>
+
+    <select id="getExistInv" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory
+        WHERE cinvcode = #{invCode}
+    </select>
+
+    <select id="getExistProcedure" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM Proced
+        WHERE procedureCode = #{procedureCode}
+    </select>
 </mapper>

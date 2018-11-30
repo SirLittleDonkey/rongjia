@@ -16,6 +16,7 @@ public class ProdPlanDTO {
     private Integer planQty;
     private Double planHour;
     private Boolean isDel;
+    private String updateTime;
     public Integer getId() {
         return id;
     }
@@ -134,5 +135,13 @@ public class ProdPlanDTO {
 
     public void setProcedureName(String procedureName) {
         this.procedureName = procedureName;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

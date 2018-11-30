@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<body>
+<div th:fragment="searchFactory">
+    <div id="setFacotry" class="layer_self_wrap" style="width:1000px;display:none;">
+        <div class="layui-body" style="margin: 1%">
+            <form id="factorySearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工厂编码</label>
+                    <div class="layui-input-inline">
+                        <input id="seFactoryCode" name="seFactoryCode" autocomplete="off" class="layui-input" type="text"/>
+                    </div>
+                    <label class="layui-form-label">工厂名称</label>
+                    <div class="layui-input-inline">
+                        <input id="seFactoryName" name="seFactoryName" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                               onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                    </div>
+                    <button class="layui-btn"  lay-submit="" lay-filter="searchFactorySubmit">提交</button>
+                </div>
+            </form>
+        </div>
+        <!--<hr class="layui-bg-blue"/>-->
+        <hr class="layui-bg-black"/>
+        <table id="factoryList" lay-filter="factoryTable"></table>
+    </div>
+</div>
+
+<script>
+    var pageCurr;
+    $(function(){
+        layui.use('table', function(){
+            var table = layui.table
+            var form = layui.form
+
+            tableIns = table.render({
+                elem: '#factoryList'
+                ,url:'/search/getFactory'
+                ,method: 'post' //默认：get请求
+                ,cellMinWidth: 80
+                ,page: true,
+                request: {
+                    pageName: 'page' //页码的参数名称，默认：page
+                    ,limitName: 'limit' //每页数据量的参数名，默认：limit
+                },response:{
+                    statusName: 'code' //数据状态的字段名称，默认：code
+                    ,statusCode: 200 //成功的状态码，默认：0
+                    ,countName: 'totals' //数据总数的字段名称，默认：count
+                    ,dataName: 'list' //数据列表的字段名称，默认：data
+                }
+                ,cols: [[
+                    {type:'numbers'}
+                    ,{field:'id', title:'ID',width:80, unresize: true, sort: true}
+                    ,{field:'factoryCode', title:'工厂号'}
+                    ,{field:'factoryName', title:'工厂名'}
+                ]]
+                ,  done: function(res, curr, count){
+                    //如果是异步请求数据方式，res即为你接口返回的信息。
+                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                    //console.log(res);
+                    //得到当前页码
+                    //console.log(curr);
+                    //得到数据总量
+                    //console.log(count);
+                    pageCurr=curr;
+                }
+            })
+            table.on('tool(factoryTable)',function(obj){
+                var data = obj.data
+            })
+        })
+        //搜索框
+        layui.use(['form'], function(){
+            var form = layui.form ,layer = layui.layer
+            //TODO 数据校验
+            //监听搜索框
+            form.on('submit(searchFactorySubmit)', function(data){
+                //重新加载table
+                loadFactory(data);
+                return false;
+            });
+        });
+    })
+
+    function loadFactory(obj){
+        //重新加载table
+        tableIns.reload({
+            where: obj.field
+            , page: {
+                curr: pageCurr //从当前页码开始
+            }
+        });
+    }
+</script>
+</body>
+</html>

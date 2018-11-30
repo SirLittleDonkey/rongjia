@@ -4,6 +4,7 @@ import com.wyait.manage.pojo.BasePojo;
 
 import java.util.Date;
 
+
 public class ppSetDTO extends BasePojo {
     private Integer id;
     private String cusCode;

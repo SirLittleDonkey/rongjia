@@ -71,7 +71,7 @@ public class WorkController {
                 page = 1;
             }
             if (null == limit) {
-                limit = 10;
+                limit = 8;
             }
             //获取工位列表
             pdr = workService.getWeeklyWorkPlan(page, limit, workStationCode);
@@ -181,4 +181,75 @@ public class WorkController {
         return map;
 
     }
+
+
+    @RequestMapping("/pause")
+    @ResponseBody
+    public Map<String, Object> pause(Integer prodPlanId){
+        logger.debug("开始生产！prodPlanId:" + prodPlanId);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("开始生产==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            map = workService.pause(prodPlanId);
+            logger.debug("开工成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "开工错误，请您稍后再试");
+            logger.error("查询生产计划数据异常！", e);
+        }
+        return map;
+
+    }
+
+    @RequestMapping("/pauseCancel")
+    @ResponseBody
+    public Map<String, Object> pauseCancel(Integer prodPlanId){
+        logger.debug("开始生产！prodPlanId:" + prodPlanId);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("开始生产==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            map = workService.pauseCancel(prodPlanId);
+            logger.debug("开工成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "开工错误，请您稍后再试");
+            logger.error("查询生产计划数据异常！", e);
+        }
+        return map;
+
+    }
+
+    @RequestMapping("/complete")
+    @ResponseBody
+    public Map<String, Object> complete(Integer prodPlanId){
+        logger.debug("开始生产！prodPlanId:" + prodPlanId);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (null == prodPlanId) {
+                logger.debug("开始生产==请求参数有误，请您稍后再试");
+                map.put("msg", "请求参数有误，请您稍后再试");
+                return map;
+            }
+            map = workService.complete(prodPlanId);
+            logger.debug("开工成功！map=" + map);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("msg", "开工错误，请您稍后再试");
+            logger.error("查询生产计划数据异常！", e);
+        }
+        return map;
+
+    }
+
 }

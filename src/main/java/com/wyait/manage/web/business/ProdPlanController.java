@@ -99,7 +99,7 @@ public class ProdPlanController {
             }
             // 查询工位
             ProdPlanVO prodPlanVO = prodPlanService.getProdPlan(id);
-            prodPlanVO.setPlanDate(prodPlanVO.getPlanDate().substring(0,10));
+            prodPlanVO.setPlanDate(prodPlanVO.getPlanDate().substring(0,19));
             logger.debug("查询生产计划数据！wsvo=" + prodPlanVO);
             if (null != prodPlanVO) {
                 map.put("prodPlanVO", prodPlanVO);

@@ -34,13 +34,20 @@ public class QualityInstructionServiceImpl implements QualityInstructionService 
     @Override
     public PageDataResult getQualityInstructions(Integer page, Integer limit, qiSearchDTO qiSearchDTO) {
         PageDataResult pdr = new PageDataResult();
-        PageHelper.startPage(page, limit);
+        //PageHelper.startPage(page, limit);
         List<qiDTO> qiDTOs = qualityInstructionMapper.getQIs(qiSearchDTO);
+        int listLen = qiDTOs.size();
+        List<qiDTO> pagedQiDTOs;
+        if(limit * page > listLen){
+            pagedQiDTOs = qiDTOs.subList(limit * (page - 1) , listLen);
+        }else{
+            pagedQiDTOs = qiDTOs.subList(limit * (page - 1) , limit * page);
+        }
         //获取分页查询后的数据
         PageInfo<qiDTO> pageInfo = new PageInfo<>(qiDTOs);
         //设置获取到的总记录数total：
         pdr.setTotals(Long.valueOf(pageInfo.getTotal()).intValue());
-        pdr.setList(qiDTOs);
+        pdr.setList(pagedQiDTOs);
         return pdr;
     }
 
@@ -60,6 +67,16 @@ public class QualityInstructionServiceImpl implements QualityInstructionService 
             qiSetDTO.setIsDel(false);
             if(!qiSetDTO.getFile().getOriginalFilename().equals("")) {
                 qiSetDTO.setFilePath(saveFileInServer(qiSetDTO.getFile()));
+            }
+            QualityInstruction existInstructionV = this.qualityInstructionMapper.findQualityInstructionByInvCodeAndProcedureCode(qiSetDTO.getInvCode(), qiSetDTO.getProcedureCode());
+            if (null != existInstructionV){
+                if (existInstructionV.getId()==qiSetDTO.getId()){
+                    qiSetDTO.setVersion(existInstructionV.getVersion());
+                } else {
+                    qiSetDTO.setVersion(existInstructionV.getVersion() + 1);
+                }
+            } else {
+                qiSetDTO.setVersion(1);
             }
             this.qualityInstructionMapper.update(qiSetDTO);
         }else {
@@ -102,7 +119,7 @@ public class QualityInstructionServiceImpl implements QualityInstructionService 
 
     public String saveFileInServer(MultipartFile file){
         String fielName = UUID.randomUUID().toString();
-        String filePath = "E:/rongjia/" + fielName + ".pdf";
+        String filePath = "C:/rongjia/PDF/" + fielName + ".pdf";
         File desFile = new File(filePath);
         try {
             file.transferTo(desFile);

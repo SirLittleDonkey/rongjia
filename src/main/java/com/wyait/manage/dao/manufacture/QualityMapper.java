@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface QualityMapper {
-    List<WorkPlanQualityDTO> getDailyWorkPlan(@Param("workStationCode")String workStationCode);
+    List<WorkPlanQualityDTO> getDailyWorkPlan();
 
     FirstInspectVO getFirstInspectData(@Param("prodPlanId")Integer prodPlanId);
 
@@ -19,5 +19,15 @@ public interface QualityMapper {
 
     int firstInspect(@Param("prodPlanId")Integer prodPlanId);
 
-    int endInspect(@Param("prodPlanId")Integer prodPlanId);
+    int firstInspect2(@Param("prodPlanId")Integer prodPlanId);
+
+    int firstInspectCancel(@Param("prodPlanId")Integer prodPlanId);
+
+    int endInspect(@Param("prodPlanId")Integer prodPlanId, @Param("FqualifiedQty")Integer FqualifiedQipty, @Param("FunqualifiedQty")Integer FunqualifiedQty);
+
+    int hasInspected(@Param("prodPlanId")Integer prodPlanId);
+
+    int hasInspected2(@Param("prodPlanId")Integer prodPlanId);
+
+    int endInspectCancel(@Param("prodPlanId")Integer prodPlanId);
 }

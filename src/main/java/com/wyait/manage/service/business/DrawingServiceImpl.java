@@ -1,5 +1,6 @@
 package com.wyait.manage.service.business;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wyait.manage.dao.business.DrawingMapper;
@@ -34,13 +35,21 @@ public class DrawingServiceImpl implements DrawingService {
     @Override
     public PageDataResult getDrawings(Integer page, Integer limit, DrawingSearchDTO drawingSearchDTO) {
         PageDataResult pdr = new PageDataResult();
-        PageHelper.startPage(page, limit);
+        //PageHelper.startPage(page, limit);
         List<DrawingDTO> drawingDTOs = drawingMapper.getDrawings(drawingSearchDTO);
+        int listLen = drawingDTOs.size();
+        List<DrawingDTO> pagedDrawingDTOs;
+        if(limit * page > listLen){
+            pagedDrawingDTOs  = drawingDTOs.subList(limit * (page - 1) , listLen);
+        }else{
+            pagedDrawingDTOs = drawingDTOs.subList(limit * (page - 1) , limit * page);
+        }
+
         //获取分页查询后的数据
         PageInfo<DrawingDTO> pageInfo = new PageInfo<>(drawingDTOs);
         //设置获取到的总记录数total：
         pdr.setTotals(Long.valueOf(pageInfo.getTotal()).intValue());
-        pdr.setList(drawingDTOs);
+        pdr.setList(pagedDrawingDTOs);
         return pdr;
     }
 
@@ -60,6 +69,16 @@ public class DrawingServiceImpl implements DrawingService {
             drawingSetDTO.setIsDel(false);
             if(!drawingSetDTO.getFile().getOriginalFilename().equals("")) {
                 drawingSetDTO.setFilePath(saveFileInServer(drawingSetDTO.getFile()));
+            }
+            Drawing existInstructionV = this.drawingMapper.findDrawingByInvCodeAndProcedureCode(drawingSetDTO.getInvCode(), drawingSetDTO.getProcedureCode());
+            if (null != existInstructionV){
+                if (existInstructionV.getId()==drawingSetDTO.getId()){
+                    drawingSetDTO.setVersion(existInstructionV.getVersion());
+                } else {
+                    drawingSetDTO.setVersion(existInstructionV.getVersion() + 1);
+                }
+            } else {
+                drawingSetDTO.setVersion(1);
             }
             this.drawingMapper.update(drawingSetDTO);
         }else {
@@ -102,7 +121,7 @@ public class DrawingServiceImpl implements DrawingService {
 
     public String saveFileInServer(MultipartFile file){
         String fielName = UUID.randomUUID().toString();
-        String filePath = "E:/rongjia/" + fielName + ".pdf";
+        String filePath = "C:/rongjia/PDF/" + fielName + ".pdf";
         File desFile = new File(filePath);
         try {
             file.transferTo(desFile);

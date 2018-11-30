@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="layout :: htmlhead" th:with="title='图纸管理'"></head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!--头-->
+    <div th:replace="fragments/head :: header"></div>
+
+    <div class="layui-body" style="margin: 1%">
+        <form id="operationDrawingSearch" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品编号</label>
+                <div class="layui-input-inline">
+                    <input id="uinvcode" name="uinvcode" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+                <label class="layui-form-label">工序号</label>
+                <div class="layui-input-inline">
+                    <input id="uprocedurecode" name="uprocedurecode" autocomplete="off" class="layui-input" type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                </div>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button class="layui-btn"  lay-submit="" lay-filter="searchSubmit">提交</button>
+            </div>
+        </form>
+
+        <!--<hr class="layui-bg-blue"/>-->
+        <hr class="layui-bg-black"/>
+
+        <button class="layui-btn layui-btn-normal" onclick="addOperationDrawing()">添加图纸</button>
+
+        <div style="display:none;" id="currentUser"><shiro:principal property="id"></shiro:principal></div>
+
+        <table id="operationDrawingList" lay-filter="operationDrawingTable"></table>
+
+        <script type="text/html" id="optBar">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs" lay-event="view">浏览</a>
+            {{#  if(d.del){ }}
+            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="recover">恢复</a>
+            {{#  } else { }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            {{#  } }}
+        </script>
+        <script type="text/html" id="uploadcheck">
+            {{#  if(d.hasUpload){ }}
+            <span >是</span>
+            {{#  } else { }}
+            <span >否</span>
+            {{#  } }}
+        </script>
+    </div>
+
+    <!--添加或编辑用户-->
+    <div id="setOperationDrawing" class="layer_self_wrap" style="width:500px;display:none;">
+        <form id="operationDrawingForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+            <input id="id" type="hidden" name="id"/>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品编号</label>
+                <div class="layui-input-inline">
+                    <input id="invCode" name="invCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">工序号</label>
+                <div class="layui-input-inline">
+                    <input id="procedureCode" name="procedureCode" lay-verify="required" autocomplete="off" class="layui-input" type="text"/>
+                </div>
+            </div>
+            <!--<div class="layui-form-item" id="versionItem">-->
+                <!--<label class="layui-form-label">版本号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input id="version" name="version" autocomplete="off" class="layui-input" type="text"/>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="layui-form-item" id="operationDrawingUpload">
+                <label class="layui-form-label">上传文件</label>
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" id="operationDrawingFile"><i class="layui-icon"></i>上传文件</button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-left: 10px;">
+                    <button class="layui-btn"  lay-submit="" lay-filter="operationDrawingSubmit">提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!--添加或编辑用户-->
+    <div id="viewOperationDrawing" class="layer_self_wrap" style="width:800px; height:100px; display:none;">
+        <div id="example1" style="width:800px; height:100px;"></div>
+    </div>
+    <!--底部-->
+    <div th:replace="fragments/footer :: footer"></div>
+    <script src="/js/dateUtils.js"></script>
+    <script src="/js/business/operationDrawing.js"></script>
+    <script src="/pdfObject/pdfobject.js"></script>
+
+</div>
+</body>
+</html>

@@ -71,7 +71,12 @@ public class DateUtil implements AutoCloseable,Serializable {
             calendar1.setTime(new Date());
             long mills = calendar1.getTimeInMillis() - calendar.getTimeInMillis();
             long passMin = mills / 60000;
-            Double miQty = passMin * reqQtyPerMin - qualiefidQty - unQualiefidQty;
+            Double miQty = 0.0;
+            if(passMin < 0){
+                miQty = (double)- qualiefidQty - unQualiefidQty;
+            }else{
+                miQty = passMin * reqQtyPerMin - qualiefidQty - unQualiefidQty;
+            }
             if(miQty > 0){
                 return "欠产" + round(miQty) + "个";
             }else{

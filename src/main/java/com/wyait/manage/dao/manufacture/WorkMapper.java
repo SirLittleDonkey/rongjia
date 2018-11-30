@@ -2,6 +2,7 @@ package com.wyait.manage.dao.manufacture;
 
 import com.wyait.manage.entity.manufacture.WorkPlanDTO;
 import com.wyait.manage.entity.manufacture.WorkVO;
+import com.wyait.manage.entity.manufacture.WorkVO2;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,12 @@ public interface WorkMapper {
     int unquality(@Param("prodPlanId")Integer prodPlanId);
 
     WorkVO getWorkVO(@Param("prodPlanId")Integer prodPlanId);
+
+    WorkVO2 getWorkVO2(@Param("prodPlanId")Integer prodPlanId);
+
+    void setWork(@Param("lastTime")long lastTime, @Param("prodPlanId")Integer prodPlanId);
+
+    void setWorkNotPause(@Param("prodPlanId")Integer prodPlanId);
+
+    void setWorkComplete(@Param("prodPlanId")Integer prodPlanId);
 }

@@ -5,15 +5,16 @@
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getOIs" resultType="com.wyait.manage.entity.business.oiDTO">
         SELECT oi.id, oi.invCode, cinvName as invName, cinvStd as invStd, oi.procedureCode, procedureName, version, filepath , case when filepath is null then 0  when filepath  = '' then 0  else 1 end as hasupload, oi.is_del
+        , isnull(oi.update_time, oi.insert_time) as updatetime
         FROM operationinstruction oi
-        INNER JOIN Inventory inv on oi.invcode = inv.cinvcode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory inv on oi.invcode = inv.cinvcode
         INNER JOIN proced pr on oi.procedurecode = pr.procedurecode
         <where>
             <if test="oiSearchDTO.uinvcode != null and oiSearchDTO.uinvcode != ''">
-                AND oi.invCode = #{oiSearchDTO.invCode}
+                AND oi.invCode = #{oiSearchDTO.uinvcode}
             </if>
             <if test="oiSearchDTO.uprocedurecode != null and oiSearchDTO.uprocedurecode != ''">
-                AND oi.procedureCode = #{oiSearchDTO.procedurecode}
+                AND oi.procedureCode = #{oiSearchDTO.uprocedurecode}
             </if>
         </where>
     </select>

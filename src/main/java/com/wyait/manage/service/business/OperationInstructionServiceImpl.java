@@ -33,13 +33,21 @@ public class OperationInstructionServiceImpl implements OperationInstructionServ
     @Override
     public PageDataResult getOperationInstructions(Integer page, Integer limit, oiSearchDTO oiSearchDTO) {
         PageDataResult pdr = new PageDataResult();
-        PageHelper.startPage(page, limit);
+        //PageHelper.startPage(page, limit);
         List<oiDTO> oiDTOs = operationInstructionMapper.getOIs(oiSearchDTO);
+        int listLen = oiDTOs.size();
+        List<oiDTO> pagedOIDTOs;
+        if(limit * page > listLen){
+            pagedOIDTOs  = oiDTOs.subList(limit * (page - 1) , listLen);
+        }else{
+            pagedOIDTOs = oiDTOs.subList(limit * (page - 1) , limit * page);
+        }
+
         //获取分页查询后的数据
         PageInfo<oiDTO> pageInfo = new PageInfo<>(oiDTOs);
         //设置获取到的总记录数total：
         pdr.setTotals(Long.valueOf(pageInfo.getTotal()).intValue());
-        pdr.setList(oiDTOs);
+        pdr.setList(pagedOIDTOs);
         return pdr;
     }
 
@@ -59,6 +67,16 @@ public class OperationInstructionServiceImpl implements OperationInstructionServ
             oiSetDTO.setIsDel(false);
             if(!oiSetDTO.getFile().getOriginalFilename().equals("")) {
                 oiSetDTO.setFilePath(saveFileInServer(oiSetDTO.getFile()));
+            }
+            OperationInstruction existInstructionV = this.operationInstructionMapper.findOperationInstructionByInvCodeAndProcedureCode(oiSetDTO.getInvCode(), oiSetDTO.getProcedureCode());
+            if (null != existInstructionV){
+                if (existInstructionV.getId()==oiSetDTO.getId()){
+                    oiSetDTO.setVersion(existInstructionV.getVersion());
+                }else {
+                    oiSetDTO.setVersion(existInstructionV.getVersion() + 1);
+                }
+            } else {
+                oiSetDTO.setVersion(1);
             }
             this.operationInstructionMapper.update(oiSetDTO);
         }else {
@@ -95,7 +113,7 @@ public class OperationInstructionServiceImpl implements OperationInstructionServ
 
     public String saveFileInServer(MultipartFile file){
         String fielName = UUID.randomUUID().toString();
-        String filePath = "E:/rongjia/" + fielName + ".pdf";
+        String filePath = "C:/rongjia/PDF/" + fielName + ".pdf";
         File desFile = new File(filePath);
         try {
             file.transferTo(desFile);

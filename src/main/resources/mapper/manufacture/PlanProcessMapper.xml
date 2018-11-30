@@ -4,9 +4,9 @@
     <select id="getPlanProcessList" resultType="com.wyait.manage.entity.manufacture.PlanProcessDTO" parameterType="com.wyait.manage.entity.manufacture.PlanProcessSearchDTO">
         SELECT p.cuscode, c.cCusName AS cusName, p.workshopcode, ws.workshopname, p.workstationcode, p.invcode, i.cInvName AS invName, p.planqty, p.plandate, p.planhour, isnull(w.qualifiedqty,0) as qualifiedqty, isnull(w.unqualifiedqty,0) as unqualifiedqty
         FROM prodplan p
-        INNER JOIN Customer c ON p.cuscode = c.cCusCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Customer c ON p.cuscode = c.cCusCode
         INNER JOIN workshop ws ON p.workshopcode = ws.workshopcode
-        INNER JOIN Inventory i ON p.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON p.invcode = i.cInvCode
         LEFT JOIN work w ON p.id = w.prodPlanId
         <where>
             <if test="planProcessSearchDTO.uworkshop != null and planProcessSearchDTO.uworkshop != ''">

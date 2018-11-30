@@ -5,8 +5,9 @@
     <!--=Start getUsers 分页查询工位列表userSearch -->
     <select id="getQIs" resultType="com.wyait.manage.entity.business.qiDTO">
         SELECT qi.id, qi.invCode, cinvName as invName, cinvStd as invStd, qi.procedureCode, procedureName, version, filepath , case when filepath is null then 0  when filepath  = '' then 0  else 1 end as hasupload, qi.is_del
+        , isnull(qi.update_time, qi.insert_time) as updatetime
         FROM qualityinstruction qi
-        INNER JOIN Inventory inv on qi.invcode = inv.cinvcode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory inv on qi.invcode = inv.cinvcode
         INNER JOIN proced pr on qi.procedurecode = pr.procedurecode
         <where>
             <if test="qiSearchDTO.uinvcode != null and qiSearchDTO.uinvcode != ''">

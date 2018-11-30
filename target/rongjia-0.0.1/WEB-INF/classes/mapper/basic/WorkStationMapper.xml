@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.basic.WorkStationMapper">
+    <resultMap id="BaseResultMap" type="com.wyait.manage.pojo.basic.WorkStation">
+        <id column="id" jdbcType="INTEGER" property="id"   />
+        <result column="factoryCode" jdbcType="VARCHAR" property="factoryCode"></result>
+        <result column="factoryName" jdbcType="VARCHAR" property="factoryName"></result>
+        <result column="workShopCode" jdbcType="VARCHAR" property="workShopCode"></result>
+        <result column="workShopName" jdbcType="VARCHAR" property="workShopName"></result>
+        <result column="workStationCode" jdbcType="VARCHAR" property="workStationCode"></result>
+        <result column="ipAddress" jdbcType="VARCHAR" property="ipAddress"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+
+    <!--=Start getUsers 分页查询工位列表userSearch -->
+    <select id="getWorkStations" resultType="com.wyait.manage.entity.basic.WorkStationDTO">
+        SELECT ws.id, ws.factoryCode, factoryName, ws.workShopCode, workShopName, workStationCode, ipAddress, ws.is_del
+        FROM workstation ws
+        INNER JOIN rj_factory f ON ws.factorycode = f.factorycode AND f.is_del = 0
+        INNER JOIN workshop wsh ON ws.workshopcode = wsh.workshopcode AND wsh.is_del = 0
+        <where>
+            <if test="workStationSearchDTO.ufoctory != null and workStationSearchDTO.ufoctory != ''">
+                AND ws.factorycode = #{workStationSearchDTO.ufoctory}
+            </if>
+            <if test="workStationSearchDTO.uworkshop != null and workStationSearchDTO.uworkshop != ''">
+                AND ws.workshopcode = #{workStationSearchDTO.uworkshop}
+            </if>
+            <if test="workStationSearchDTO.uworkstation != null and workStationSearchDTO.uworkstation != ''">
+                AND ws.workstationcode = #{workStationSearchDTO.uworkstation}
+            </if>
+        </where>
+    </select>
+    <!--=End getUsers 分页查询工位列表 -->
+
+    <!--=Start setDelUser 删除工位 -->
+    <update id="setDelWorkStation">
+		update workstation
+		set
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+    <!--=End setDelUser 删除工位 -->
+
+    <!--=Start getUserAndRoles 查询用户及他对应的角色ids -->
+    <resultMap id="getWorkStation" type="com.wyait.manage.entity.basic.WorkStationVO">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="factoryCode" jdbcType="VARCHAR" property="factoryCode"></result>
+        <result column="workShopCode" jdbcType="VARCHAR" property="workShopCode"></result>
+        <result column="workStationCode" jdbcType="VARCHAR" property="workStationCode"></result>
+        <result column="ipAddress" jdbcType="VARCHAR" property="ipAddress"></result>
+        <result column="is_del" jdbcType="BIT" property="isDel" />
+    </resultMap>
+    <select id="getWorkStation" resultMap="getWorkStation">
+		SELECT id, factoryCode, workShopCode, workStationCode, ipAddress, is_del
+        FROM workstation
+        WHERE id = #{id} AND is_del = 0
+	</select>
+    <!--=End getUserAndRoles 查询用户及他对应的角色ids -->
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.wyait.manage.pojo.basic.WorkStation">
+        update workstation
+        <set>
+            <if test="factoryCode != null">
+                factoryCode = #{factoryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="workShopCode != null">
+                workShopCode = #{workShopCode,jdbcType=VARCHAR},
+            </if>
+            <if test="workStationCode != null">
+                workStationCode = #{workStationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="ipAddress != null">
+                ipAddress = #{ipAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="insertUid != null">
+                insert_uid = #{insertUid,jdbcType=INTEGER},
+            </if>
+            update_time = getdate(),
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.pojo.basic.WorkStation">
+		insert into workstation ( factoryCode,
+		workShopCode,
+		workStationCode,
+		ipAddress, insert_uid, insert_time, is_del
+		)
+		values ( #{factoryCode,jdbcType=VARCHAR},
+		#{workShopCode,jdbcType=VARCHAR},
+		#{workStationCode,jdbcType=VARCHAR},
+		#{ipAddress,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+
+    <!--=Start findWorkStationByWorkStationCode 根据工位号获取工位数据 -->
+    <select id="findWorkStationByWorkStationCode" resultType="com.wyait.manage.pojo.basic.WorkStation">
+		select
+		id, factoryCode,
+		workShopCode, workStationCode ipAddress, is_del
+		from workstation
+		WHERE
+		workStationCode=#{workStationCode} and is_del=0
+	</select>
+    <!--=End findUserByMobile 根据手机号查找用户 -->
+</mapper>

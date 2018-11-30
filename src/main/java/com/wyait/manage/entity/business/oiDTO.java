@@ -13,6 +13,7 @@ public class oiDTO {
     private String filepath;
     private Boolean hasUpload;
     private Boolean isDel;
+    private String updateTime;
 
     public Integer getId() {
         return id;
@@ -92,5 +93,13 @@ public class oiDTO {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

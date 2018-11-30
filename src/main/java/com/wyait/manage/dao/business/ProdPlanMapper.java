@@ -18,4 +18,15 @@ public interface ProdPlanMapper {
     ProdPlanVO getProdPlan(Integer id);
 
     int update(ppSetDTO ppSetDTO);
+
+    int getExistCus(@Param("cusCode")String cusCode);
+
+    int getExistWorkShop(@Param("workShopCode")String workShopCode);
+
+    int getExistWorkStation(@Param("workStationCode")String workStationCode);
+
+    int getExistInv(@Param("invCode")String invCode);
+
+    int getExistProcedure(@Param("procedureCode")String procedureCode);
+
 }

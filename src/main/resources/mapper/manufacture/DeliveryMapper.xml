@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wyait.manage.dao.manufacture.DeliveryMapper">
-    <select id="getDailyDeliveryList" resultType="com.wyait.manage.entity.manufacture.DailyDeliveryDTO">
-        SELECT sm.cCusCode AS cusCode, sm.cCusName AS cusName, sm.cSOCode AS soCode, sb.cInvCode AS invCode, sb.cInvName AS invName, CONVERT(varchar,sb.dpredate,23) + ' ' + SUBSTRING(isnull(sb.cDefine28,'1112'),0,3) + ':' + SUBSTRING(isnull(sb.cDefine28,'1112'),3,2) as preDate, isnull(sb.iQuantity ,0) as planqty,  isnull(db.iQuantity,0) as delyQty
-        FROM SO_SOMain sm
-        INNER JOIN SO_SODetails sb ON sm.id = sb.id
-        LEFT JOIN DispatchLists db ON sm.cSOCode = db.cSOCode AND sb.iRowNo = db.iorderrowno
-        WHERE CONVERT(varchar,sb.dpredate,23) = CONVERT(varchar,getdate(),23)
+    <select id="getDailyDeliveryList" resultType="com.wyait.manage.entity.manufacture.DailyDeliveryDTO" parameterType="com.wyait.manage.entity.manufacture.DailyDeliverySearchDTO">
+        SELECT dbh.cCusCode AS cusCode, dbh.cCusName AS cusName, dbh.cSOCode AS soCode, db.cInvCode AS invCode, db.cInvName AS invName, CONVERT(varchar,dbh.dDate,23) + ' ' + SUBSTRING(isnull(db.cDefine28,'1112'),0,3) + ':' + SUBSTRING(isnull(db.cDefine28,'1112'),3,2) as preDate, isnull(db.iQuantity ,0) as planqty,  isnull(rd.iQuantity,0) as delyQty
+        FROM [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].DispatchList dbh
+        LEFT JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].DispatchLists db ON  db.DLID = dbh.DLID
+        LEFT JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].rdrecords32 rd ON dbh.cDLCode = rd.cbdlcode And db.irowno = rd.ipesoseq
+        <where>
+            <if test="dailyDeliverySearchDTO.ucuscode != null and dailyDeliverySearchDTO.ucuscode != ''">
+                AND cCusCode = #{dailyDeliverySearchDTO.ucuscode}
+            </if>
+            <if test="dailyDeliverySearchDTO.uinvcode != null and dailyDeliverySearchDTO.uinvcode != ''">
+                AND db.cInvCode  = #{dailyDeliverySearchDTO.uinvcode}
+            </if>
+            AND CONVERT(varchar,dbh.dDate,23) = CONVERT(varchar,getdate(),23) and bReturnFlag =0
+        </where>
     </select>
 </mapper>

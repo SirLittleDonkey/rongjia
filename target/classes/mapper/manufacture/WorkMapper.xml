@@ -5,7 +5,7 @@
     <select id="getDailyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanDTO">
         SELECT pp.id as prodplanid, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, isnull(w.qualifiedqty, 0) as qualifiedqty, isnull(w.unqualifiedqty,0) as unqualifiedqty, w.hasInspected
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
         LEFT JOIN work w ON pp.id = w.prodPlanId
         WHERE pp.workstationcode = #{workStationCode} AND CONVERT(varchar,plandate,23) = CONVERT(varchar,GETDATE(),23)
@@ -14,7 +14,7 @@
     <select id="getWeeklyWorkPlan" resultType="com.wyait.manage.entity.manufacture.WorkPlanDTO">
         SELECT pp.id as prodplanid, pp.plandate, pp.invcode, i.cInvName as invName, i.cInvStd as invStd, p.procedurename,pp.planhour, pp.planqty, w.qualifiedqty, w.unqualifiedqty, w.hasInspected
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
         LEFT JOIN work w ON pp.id = w.prodPlanId
         WHERE pp.workstationcode = #{workStationCode} AND CONVERT(varchar,plandate,23) BETWEEN CONVERT(varchar,DATEADD(DAY,-7,GETDATE()),23) AND CONVERT(varchar,GETDATE(),23)
@@ -52,15 +52,41 @@
     </update>
 
     <select id="getWorkVO" resultType="com.wyait.manage.entity.manufacture.WorkVO">
-        SELECT TOP(1) w.prodPlanId, planqty, w.startTime, pp.invcode, i.cInvCode as invCode, i.cInvStd as invStd, pp.procedurecode, p.procedurename, isnull(w.qualifiedqty,0) + isnull(w.unqualifiedqty,0) AS realQty, o.filepath as pdfPath, pp.planDate, pp.planhour, pp.planqty, isnull(w.qualifiedqty,0) as qualifiedqty, isnull(w.unqualifiedqty,0) as unqualifiedqty
+        SELECT TOP(1) w.prodPlanId, planqty, w.startTime, pp.invcode, i.cInvCode as invCode, i.cInvStd as invStd, pp.procedurecode, p.procedurename, isnull(w.qualifiedqty,0) + isnull(w.unqualifiedqty,0) AS realQty, o.filepath as operationInstruction, od.filepath as operationDrawing, pp.planDate, pp.planhour, pp.planqty, isnull(w.qualifiedqty,0) as qualifiedqty, isnull(w.unqualifiedqty,0) as unqualifiedqty
         FROM prodplan pp
-        INNER JOIN Inventory i ON pp.invcode = i.cInvCode
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory i ON pp.invcode = i.cInvCode
         INNER JOIN proced p ON pp.procedurecode = p.procedurecode
         LEFT JOIN work w ON pp.id = w.prodPlanId
         LEFT JOIN operationinstruction o ON pp.invcode = o.invcode AND pp.procedurecode = o.procedurecode
+        LEFT JOIN operationDrawing od ON pp.invcode = od.invcode AND pp.procedurecode = od.procedurecode
         WHERE prodPlanId = #{prodPlanId}
-        ORDER BY o.version DESC
+        ORDER BY o.version DESC, od.version DESC
     </select>
 
+    <select id="getWorkVO2" resultType="com.wyait.manage.entity.manufacture.WorkVO2">
+        SELECT prodPlanId, startTime, isnull(lastTime,0) as lastTime, isnull(ispause,0) ispause, isnull(hascomplete,0) hascomplete, isnull(hasEndInspected,0) hasEndInspected
+        FROM work
+        WHERE prodPlanId = #{prodPlanId}
+    </select>
+
+    <update id="setWork">
+        UPDATE work
+        SET lastTime = #{lastTime},
+        ispause = 1
+        WHERE prodplanid = #{prodPlanId}
+    </update>
+
+    <update id="setWorkNotPause">
+        UPDATE work
+        SET startTime = getdate(),
+        ispause = 0
+        WHERE prodplanid = #{prodPlanId}
+    </update>
+
+    <update id="setWorkComplete">
+        UPDATE work
+        SET hascomplete = 1
+        WHERE prodplanid = #{prodPlanId}
+    </update>
 
 </mapper>

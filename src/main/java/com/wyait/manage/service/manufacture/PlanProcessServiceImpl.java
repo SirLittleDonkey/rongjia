@@ -22,7 +22,7 @@ public class PlanProcessServiceImpl implements PlanProcessService {
     @Override
     public PageDataResult getPlanProcessList(Integer page, Integer limit, PlanProcessSearchDTO planProcessSearchDTO) throws ParseException {
         PageDataResult pdr = new PageDataResult();
-        PageHelper.startPage(page, limit);
+        //PageHelper.startPage(page, limit);
         List<PlanProcessDTO> planProcessDTOList = planProcessMapper.getPlanProcessList(planProcessSearchDTO);
         for(PlanProcessDTO planProcessDTO: planProcessDTOList){
             DecimalFormat df = new DecimalFormat("0.00%");
@@ -31,11 +31,19 @@ public class PlanProcessServiceImpl implements PlanProcessService {
             planProcessDTO.setCompletionRate(compRate);
             planProcessDTO.setState(DateUtil.getCurrentState(planProcessDTO.getPlanDate(), planProcessDTO.getPlanHour(), planProcessDTO.getPlanQty(),planProcessDTO.getQualifiedQty(), planProcessDTO.getUnqualifiedQty()));
         }
+        int listLen = planProcessDTOList.size();
+        List<PlanProcessDTO> pagedPlanProcessDTO;
+        if(limit * page > listLen){
+            pagedPlanProcessDTO = planProcessDTOList.subList(limit * (page - 1) , listLen);
+        }else{
+            pagedPlanProcessDTO = planProcessDTOList.subList(limit * (page - 1) , limit * page);
+        }
+
         //获取分页查询后的数据
         PageInfo<PlanProcessDTO> pageInfo = new PageInfo<>(planProcessDTOList);
         //设置获取到的总记录数total：
         pdr.setTotals(Long.valueOf(pageInfo.getTotal()).intValue());
-        pdr.setList(planProcessDTOList);
+        pdr.setList(pagedPlanProcessDTO);
         return pdr;
     }
 }

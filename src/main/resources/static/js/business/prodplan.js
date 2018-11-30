@@ -38,6 +38,7 @@ $(function(){
                 ,{field:'planDate', title: '计划日期'}
                 ,{field:'planQty', title: '计划数'}
                 ,{field:'planHour', title:'计划加工小时数'}
+                ,{field:'updateTime', title:'更新时间'}
                 ,{fixed:'right', title:'操作',width:120,align:'center', toolbar:'#optBar'}
             ]]
             ,  done: function(res, curr, count){

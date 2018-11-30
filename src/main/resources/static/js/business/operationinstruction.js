@@ -33,6 +33,7 @@ $(function () {
                 {field: 'procedureName', title: '工序名'},
                 {field: 'version', title: '版本号'},
                 {field: 'hasUpload', title: '是否上传', templet: '#uploadcheck'},
+                {field: 'updateTime', title: '更新时间'},
                 {field: 'right', title:'操作', width: 200, align: 'center', toolbar: '#optBar'}
             ]],
             done: function (res, curr, count) {

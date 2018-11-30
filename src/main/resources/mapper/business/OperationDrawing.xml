@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wyait.manage.dao.business.OperationDrawingMapper">
+
+    <!--=Start getUsers 分页查询工位列表userSearch -->
+    <select id="getOperationDrawings" resultType="com.wyait.manage.entity.business.OperationDrawingDTO">
+        SELECT draw.id, draw.invCode, cinvName as invName, cinvStd as invStd, draw.procedureCode, procedureName, version, filepath , case when filepath is null then 0  when filepath  = '' then 0  else 1 end as hasupload, draw.is_del
+        , isnull(draw.update_time, draw.insert_time) as updatetime
+        FROM operationDrawing draw
+        INNER JOIN [192.168.0.243\erpdb].[UFDATA_003_2018].[dbo].Inventory inv on draw.invcode = inv.cinvcode
+        INNER JOIN proced pr on draw.procedurecode = pr.procedurecode
+        <where>
+            <if test="OperationDrawingSearchDTO.uinvcode != null and OperationDrawingSearchDTO.uinvcode != ''">
+                AND draw.invCode = #{OperationDrawingSearchDTO.uinvcode}
+            </if>
+            <if test="OperationDrawingSearchDTO.uprocedurecode != null and OperationDrawingSearchDTO.uprocedurecode != ''">
+                AND draw.procedureCode = #{OperationDrawingSearchDTO.uprocedurecode}
+            </if>
+        </where>
+    </select>
+
+    <select id="findOperationDrawingByInvCodeAndProcedureCode" resultType="com.wyait.manage.pojo.business.OperationDrawing">
+        SELECT draw.id, draw.invcode, draw.procedureCode, draw.version, draw.filepath
+        FROM operationDrawing draw
+        INNER JOIN(
+          SELECT invCode, procedureCode, MAX(version) version
+          FROM operationDrawing
+          GROUP BY invCode, procedureCode) ma
+        ON draw.invcode = ma.invcode AND draw.procedureCode = ma.procedurecode AND draw.version = ma.version
+        WHERE draw.invCode = #{invCode} AND draw.procedureCode = #{procedureCode} AND is_del = 0
+    </select>
+
+    <insert id="insertTotallyNew" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.OperationDrawingSetDTO">
+        insert into operationDrawing ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		1,
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.wyait.manage.entity.business.OperationDrawingSetDTO">
+        insert into operationDrawing ( invCode,
+		procedureCode,
+		version,
+		filepath, insert_uid, insert_time, is_del
+		)
+		values ( #{invCode,jdbcType=VARCHAR},
+		#{procedureCode,jdbcType=VARCHAR},
+		#{version,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		#{insertUid,jdbcType=INTEGER},
+		getdate(),
+		#{isDel,jdbcType=BIT}
+		)
+    </insert>
+
+    <select id="getOperationDrawing" resultType="com.wyait.manage.pojo.business.OperationDrawing">
+        SELECT id, invCode, procedureCode, version, filePath
+        FROM operationDrawing
+        WHERE id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="findOperationDrawingByIPV" resultType="com.wyait.manage.pojo.business.OperationDrawing">
+        SELECT draw.id, draw.invcode, draw.procedureCode, draw.version, draw.filepath
+        FROM operationDrawing draw
+        WHERE draw.invCode = #{invCode} AND draw.procedureCode = #{procedureCode} AND draw.version = #{version} AND is_del = 0
+    </select>
+
+    <update id="update">
+        update operationDrawing
+		set
+		invCode = #{invCode,jdbcType=NVARCHAR},
+		procedureCode = #{procedureCode,jdbcType=NVARCHAR},
+		version = #{version,jdbcType=INTEGER},
+		filePath = #{filePath,jdbcType=NVARCHAR},
+		insert_uid = #{insertUid,jdbcType=INTEGER},
+		update_time = getdate(),
+		is_del = #{isDel,jdbcType=BIT}
+		where id =
+		#{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="setDelOperationDrawing">
+        update  operationDrawing
+        set is_del = #{isDel,jdbcType=INTEGER}
+        where id =
+		#{id,jdbcType=INTEGER}
+    </update>
+</mapper>

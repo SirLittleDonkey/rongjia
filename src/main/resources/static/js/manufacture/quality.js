@@ -4,6 +4,7 @@
 var pageCurr;
 var workStationCode;
 $(function(){
+    kaishi()
 
     $.post("/manufacture/getWorkStationCode", function(data){
         workStationCode = data
@@ -15,9 +16,10 @@ $(function(){
         var form = layui.form
         tableIns = table.render({
             elem: '#dailyWorkPlanList'
-            ,url:'/manufacture/getDailyWorkPlanQuality?workStationCode=' + workStationCode
+            ,url:'/manufacture/getDailyWorkPlanQuality'
             ,method: 'post' //默认：get请求
-            ,cellMinWidth: 80,
+            ,cellMinWidth: 80
+            ,page: true,
             request: {
                 pageName: 'page' //页码的参数名称，默认：page
                 ,limitName: 'limit' //每页数据量的参数名，默认：limit
@@ -29,17 +31,19 @@ $(function(){
             }
             ,cols: [[
                 {type:'numbers'}
-                ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true}
-                ,{field:'planDate', title:'日期'}
-                ,{field:'invCode', title:'产品编号'}
-                ,{field:'invName', title: '产品名称'}
-                ,{field:'invStd', title: '规格型号'}
-                ,{field:'procedureName', title: '工序'}
-                ,{field:'planQty', title:'计划数量'}
-                ,{field:'realQty', title:'实际数量'}
-                ,{fixed:'right', title:'操作',width:140,align:'center', toolbar:'#optBar'}
+                ,{field:'prodPlanId', title:'ProdPlanId',width:80, unresize: true ,style:'font-size:25px;'}
+                ,{field:'planDate', title:'日期',style:'font-size:25px;'}
+                ,{field:'invCode', title:'产品编号',style:'font-size:25px;'}
+                ,{field:'invName', title: '产品名称',style:'font-size:25px;'}
+                ,{field:'invStd', title: '规格型号',style:'font-size:25px;'}
+                ,{field:'procedureName', title: '工序',style:'font-size:25px;'}
+                ,{field:'planQty', title:'计划数量',style:'font-size:25px;'}
+                ,{field:'realQty', title:'实际数量',style:'font-size:25px;'}
+                ,{fixed:'right', title:'操作',width:140,align:'center', toolbar:'#optBar',style:'font-size:25px;'}
             ]]
             ,  done: function(res, curr, count){
+                $('tr').css({'background-color': '#191970', 'color': 'white','font-size':'25px'});
+                $('th').css({'font-size':'25px'});
                 //如果是异步请求数据方式，res即为你接口返回的信息。
                 //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
                 //console.log(res);
@@ -56,10 +60,20 @@ $(function(){
                 //首检
                 startFirstInspect(data, data.prodPlanId)
             }
+            if(obj.event === 'firstInspectcancel'){
+                //首检取消
+                startFirstInspect(data, data.prodPlanId)
+            }
             if(obj.event === 'endInspect'){
                 //终检
                 startEndInspect(data, data.prodPlanId)
             }
+            if(obj.event === 'endInspectCancel'){
+                //终检
+                startEndInspect(data, data.prodPlanId)
+            }
+
+
         })
     })
 })
@@ -85,15 +99,16 @@ function startFirstInspect(obj, prodPlanId){
                 $('#invCode').html(data.firstInspectVO.invCode == null ? '': data.firstInspectVO.invCode)
                 $('#invName').html(data.firstInspectVO.invName == null ? '': data.firstInspectVO.invName)
                 $('#invStd').html(data.firstInspectVO.invStd == null ? '': data.firstInspectVO.invStd)
-                PDFObject.embed("/business/getPDF?filePath=" + data.firstInspectVO.filePath, "#example1")
+                PDFObject.embed("/business/getPDF?filePath=" + data.firstInspectVO.qualifiedInstructionFilePath, "#qualifiedInstruction1")
+                PDFObject.embed("/business/getPDF?filePath=" + data.firstInspectVO.qualifiedDrawingFilePath, "#qualifiedDrawing1")
                 layui.use('element', function() {
                     var $ = layui.jquery
                         , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-                    element.tabChange('demo', 'startWork'); //切换到：用户管理
+                    element.tabChange('quality', 'startWork'); //切换到：用户管理
                 })
             }else{
                 //弹出错误提示
-                layer.alert(data.msg,function () {
+                layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
                     layer.closeAll();
                 });
             }
@@ -103,21 +118,21 @@ function startFirstInspect(obj, prodPlanId){
 }
 
 function firstInspectSubmit(){
-    layer.alert('确定首检吗？',{
+    layer.alert("<em style='color:black'>" + "确定首检吗？"+ "</em>",{
         closeBtn: 1,
         btn: ['确定','取消'],
         yes: function() {
             $.post("/manufacture/firstInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
                 if(isLogin(data)){
                     if(data.msg == "ok" ){
-                        layer.alert('首检成功');
+                        layer.alert("<em style='color:black'>" + "首检成功" + "</em>");
                         setTimeout(function(){
                             $(window).attr('location','/manufacture/quality')
                         }, 3000)
 
                     }else{
                         //弹出错误提示
-                        layer.alert(data.msg,function () {
+                        layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
                             layer.closeAll();
                         });
                     }
@@ -128,9 +143,36 @@ function firstInspectSubmit(){
 
 }
 
+function firstInspectSubmitCancel(){
+    layer.alert("<em style='color:black'>" + "确定取消首检吗？"+ "</em>",{
+        closeBtn: 1,
+        btn: ['确定','取消'],
+        yes: function() {
+            $.post("/manufacture/firstInspectCancel",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+                if(isLogin(data)){
+                    if(data.msg == "ok" ){
+                        layer.alert("<em style='color:black'>" + "取消首检成功" + "</em>");
+                        setTimeout(function(){
+                            $(window).attr('location','/manufacture/quality')
+                        }, 3000)
+
+                    }else{
+                        //弹出错误提示
+                        layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
+}
+
 function startEndInspect(obj, prodPlanId){
     if(!obj.hasInspected){
-        layer.alert("请先首检后再终检")
+        layer.alert("<em style='color:black'>" + "请先首检后再终检" + "</em>")
+    }if(!obj.hasComplete){
+        layer.alert("<em style='color:black'>" + "还未完工" + "</em>")
     }else{
     //回显数据
     $.get("/manufacture/getEndInspectData", {"prodPlanId": prodPlanId}, function(data){
@@ -140,15 +182,16 @@ function startEndInspect(obj, prodPlanId){
                 $('#einvCode').html(data.endInspectVO.invCode == null ? '': data.endInspectVO.invCode)
                 $('#einvName').html(data.endInspectVO.invName == null ? '': data.endInspectVO.invName)
                 $('#einvStd').html(data.endInspectVO.invStd == null ? '': data.endInspectVO.invStd)
-                PDFObject.embed("/business/getPDF?filePath=" + data.endInspectVO.filePath, "#eexample1")
+                PDFObject.embed("/business/getPDF?filePath=" + data.endInspectVO.qualifiedInstructionFilePath, "#qualifiedInstruction2")
+                PDFObject.embed("/business/getPDF?filePath=" + data.endInspectVO.qualifiedDrawingFilePath, "#qualifiedDrawing2")
                 layui.use('element', function() {
                     var $ = layui.jquery
                         , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-                    element.tabChange('demo', 'endCheck'); //切换到：用户管理
+                    element.tabChange('quality', 'endWork'); //切换到：终检
                 })
             }else{
                 //弹出错误提示
-                layer.alert(data.msg,function () {
+                layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
                     layer.closeAll();
                 });
             }
@@ -159,21 +202,29 @@ function startEndInspect(obj, prodPlanId){
 }
 
 function endInspectSubmit(){
-    layer.alert('确定终检吗？',{
+    if($("#FqualifiedQty").val() == ''){
+        layer.alert("<em style='color:black'>" + "合格数量未填写!" + "</em>")
+        return
+    }
+    if($("#FunqualifiedQty").val() == ''){
+        layer.alert("<em style='color:black'>" + "不合格数量未填写!" + "</em>")
+        return
+    }
+    layer.alert("<em style='color:black'>" + "确定终检吗？" + "</em>",{
         closeBtn: 1,
         btn: ['确定','取消'],
         yes: function() {
-            $.post("/manufacture/endInspect",{"prodPlanId": $("#prodPlanId").val()}, function (data){
+            $.post("/manufacture/endInspect",{"prodPlanId": $("#prodPlanId").val(), "FunqualifiedQty": $("#FunqualifiedQty").val(), "FqualifiedQty": $("#FqualifiedQty").val()}, function (data){
                 if(isLogin(data)){
                     if(data.msg == "ok" ){
-                        layer.alert('终检成功')
+                        layer.alert("<em style='color:black'>" + "终检成功" + "</em>")
                         setTimeout(function(){
                             $(window).attr('location','/manufacture/quality')
                         }, 3000);
 
                     }else{
                         //弹出错误提示
-                        layer.alert(data.msg,function () {
+                        layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
                             layer.closeAll();
                         });
                     }
@@ -185,7 +236,30 @@ function endInspectSubmit(){
 }
 
 
+function endInspectSubmitCancel(){
+    layer.alert("<em style='color:black'>" + "确定取消终检吗？" + "</em>",{
+        closeBtn: 1,
+        btn: ['确定','取消'],
+        yes: function() {
+            $.post("/manufacture/endInspectCancel",{"prodPlanId": $("#prodPlanId").val(), "FunqualifiedQty": $("#FunqualifiedQty").val(), "FqualifiedQty": $("#FqualifiedQty").val()}, function (data){
+                if(isLogin(data)){
+                    if(data.msg == "ok" ){
+                        layer.alert("<em style='color:black'>" + "终检取消成功" + "</em>")
+                        setTimeout(function(){
+                            $(window).attr('location','/manufacture/quality')
+                        }, 3000);
 
+                    }else{
+                        //弹出错误提示
+                        layer.alert("<em style='color:black'>" + data.msg + "</em>",function () {
+                            layer.closeAll();
+                        });
+                    }
+                }
+            })
+        }
+    })
+}
 
 
 

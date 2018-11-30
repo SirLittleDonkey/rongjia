@@ -6,7 +6,8 @@ public class EndInspectVO {
     private String invName;
     private String invStd;
     private String procedureName;
-    private String filePath;
+    private String qualifiedInstructionFilePath;
+    private String qualifiedDrawingFilePath;
 
     public Integer getProdPlanId() {
         return prodPlanId;
@@ -48,11 +49,19 @@ public class EndInspectVO {
         this.procedureName = procedureName;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getQualifiedInstructionFilePath() {
+        return qualifiedInstructionFilePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setQualifiedInstructionFilePath(String qualifiedInstructionFilePath) {
+        this.qualifiedInstructionFilePath = qualifiedInstructionFilePath;
+    }
+
+    public String getQualifiedDrawingFilePath() {
+        return qualifiedDrawingFilePath;
+    }
+
+    public void setQualifiedDrawingFilePath(String qualifiedDrawingFilePath) {
+        this.qualifiedDrawingFilePath = qualifiedDrawingFilePath;
     }
 }
